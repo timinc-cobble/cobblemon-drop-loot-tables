@@ -1,6 +1,6 @@
 # Drop Loot Tables
 
-v1.7.2-1.7
+v1.7.3-1.7
 
 [Modrinth](https://modrinth.com/mod/cobblemon-droploottables)
 
@@ -63,35 +63,35 @@ Check out the demo pack below. It has the following basic examples:
 - The Pidgey line will drop a feather or a random Pokémon feather every 20 ticks and emit a wing flapping sound.
 - A Shuckle participating in battle on the winning side while holding a berry will turn that berry into berry juice.
 
-[Demo Pack](https://www.notion.so/Demo-Pack-2f657e0d4afd81e48739e20a5b0d0989?pvs=21)
+[Demo Pack](https://www.notion.so/Demo-Pack-30a57e0d4afd8180bb54e05f4301bb19?pvs=21)
 
 ## Player Help
 
-[How it works](https://www.notion.so/How-it-works-2f657e0d4afd81378d57ff119a77f53d?pvs=21)
+[How it works](https://www.notion.so/How-it-works-30a57e0d4afd815c8779c121557514d4?pvs=21)
 
-[Config Options](https://www.notion.so/Config-Options-2f657e0d4afd81939870d0d17dc6e898?pvs=21)
+[Config Options](https://www.notion.so/Config-Options-30a57e0d4afd81e58f4af9a4868150bf?pvs=21)
 
 ## Addon Dev Help
 
 ### Data Pack Help
 
-[Making an Addon](https://www.notion.so/Making-an-Addon-2f657e0d4afd812b8842d94de94241e8?pvs=21)
+[Making an Addon](https://www.notion.so/Making-an-Addon-30a57e0d4afd817fab44f1e34b7a6bc3?pvs=21)
 
 ## Mod Dev Help
 
-[Make your own dropper type](https://www.notion.so/Make-your-own-dropper-type-2f657e0d4afd81a1bd79cc83e0ac91e8?pvs=21)
+[Make your own dropper type](https://www.notion.so/Make-your-own-dropper-type-30a57e0d4afd819894a6d263d4049a00?pvs=21)
 
-[Make your own condition](https://www.notion.so/Make-your-own-condition-2f657e0d4afd81b8a4ced4542f01e84b?pvs=21)
+[Make your own condition](https://www.notion.so/Make-your-own-condition-30a57e0d4afd8152895ec007d5ca1a95?pvs=21)
 
-[Register a new drop target](https://www.notion.so/Register-a-new-drop-target-2f657e0d4afd81158d03dd80529318c3?pvs=21)
+[Register a new drop target](https://www.notion.so/Register-a-new-drop-target-30a57e0d4afd81d2b292ca1b5d0e20ad?pvs=21)
 
 ## Parts
 
-[Drop Target Types](https://www.notion.so/Drop-Target-Types-2f657e0d4afd8119a904c0e1c51ba633?pvs=21)
+[Drop Target Types](https://www.notion.so/Drop-Target-Types-30a57e0d4afd81a6bbf4f38338e900fd?pvs=21)
 
-[Dropper Type](https://www.notion.so/Dropper-Type-2f657e0d4afd818fbc14f48ca18391bc?pvs=21)
+[Dropper Type](https://www.notion.so/Dropper-Type-30a57e0d4afd81efa41fcbb58351e6fc?pvs=21)
 
-[Drop Conditions](https://www.notion.so/Drop-Conditions-2f657e0d4afd81bd813fe42af3d4e8eb?pvs=21)
+[Drop Conditions](https://www.notion.so/Drop-Conditions-30a57e0d4afd8183818fc313872af3d2?pvs=21)
 
 ## Known Issues
 

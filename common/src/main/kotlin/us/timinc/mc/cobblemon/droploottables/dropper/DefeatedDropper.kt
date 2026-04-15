@@ -19,6 +19,7 @@ import us.timinc.mc.cobblemon.droploottables.api.DropContext
 import us.timinc.mc.cobblemon.droploottables.api.Dropper
 import us.timinc.mc.cobblemon.droploottables.api.Dropper.Companion.CodecPieces
 import us.timinc.mc.cobblemon.droploottables.api.DropperType
+import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
 class DefeatedDropper(
@@ -28,6 +29,7 @@ class DefeatedDropper(
     override val dropTarget: ResourceLocation?,
     val battleTypes: List<String> = listOf("pvw"),
     val preserveBaseDrops: Boolean = false,
+    val isWild: Boolean? = null,
 ) : Dropper<DefeatedDropper.Context>() {
     companion object {
         val CODEC: MapCodec<DefeatedDropper> = RecordCodecBuilder.mapCodec { instance ->
@@ -39,8 +41,9 @@ class DefeatedDropper(
                 Codec.STRING.listOf().optionalFieldOf("battle_types", listOf("pvw"))
                     .forGetter(DefeatedDropper::battleTypes),
                 Codec.BOOL.optionalFieldOf("preserve_base_drops", false)
-                    .forGetter(DefeatedDropper::preserveBaseDrops)
-            ).apply(instance) { trigger, lootTables, conditions, dropTarget, battleTypes, preserveBaseDrops ->
+                    .forGetter(DefeatedDropper::preserveBaseDrops),
+                Codec.BOOL.optionalFieldOf("is_wild").forGetter { Optional.ofNullable(it.isWild) },
+            ).apply(instance) { trigger, lootTables, conditions, dropTarget, battleTypes, preserveBaseDrops, isWild ->
                 DefeatedDropper(
                     trigger,
                     lootTables,
@@ -48,6 +51,7 @@ class DefeatedDropper(
                     dropTarget.getOrNull(),
                     battleTypes,
                     preserveBaseDrops,
+                    isWild.getOrNull(),
                 )
             }
         }
@@ -91,5 +95,6 @@ class DefeatedDropper(
                     || (battleTypes.contains("pvn") && context.battle.isPvN)
                     || (battleTypes.contains("pvp") && context.battle.isPvP)
             )
+            && (isWild?.let { it == context.focusPokemon.isWild() } ?: true)
             && super.canDrop(context)
 }
