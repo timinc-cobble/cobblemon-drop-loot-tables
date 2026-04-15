@@ -18,11 +18,35 @@ import us.timinc.mc.cobblemon.droploottables.api.DropContext
 import us.timinc.mc.cobblemon.droploottables.api.Dropper
 import us.timinc.mc.cobblemon.droploottables.api.DropperType
 import us.timinc.mc.cobblemon.droploottables.condition.AbilityCondition
+import us.timinc.mc.cobblemon.droploottables.condition.AspectsCondition
 import us.timinc.mc.cobblemon.droploottables.condition.CaughtBallCondition
+import us.timinc.mc.cobblemon.droploottables.condition.DynamaxLevelCondition
+import us.timinc.mc.cobblemon.droploottables.condition.EggGroupCondition
+import us.timinc.mc.cobblemon.droploottables.condition.ElementalTypeCondition
+import us.timinc.mc.cobblemon.droploottables.condition.EvCondition
+import us.timinc.mc.cobblemon.droploottables.condition.FriendshipLevelCondition
+import us.timinc.mc.cobblemon.droploottables.condition.GenderCondition
+import us.timinc.mc.cobblemon.droploottables.condition.GmaxCondition
+import us.timinc.mc.cobblemon.droploottables.condition.HeldItemCondition
+import us.timinc.mc.cobblemon.droploottables.condition.HiddenAbilityCondition
+import us.timinc.mc.cobblemon.droploottables.condition.IvCondition
 import us.timinc.mc.cobblemon.droploottables.condition.KnowledgeLevelCondition
+import us.timinc.mc.cobblemon.droploottables.condition.LabelCondition
+import us.timinc.mc.cobblemon.droploottables.condition.LevelCondition
+import us.timinc.mc.cobblemon.droploottables.condition.MoveTypesCondition
 import us.timinc.mc.cobblemon.droploottables.condition.MovesCondition
+import us.timinc.mc.cobblemon.droploottables.condition.NatureCondition
+import us.timinc.mc.cobblemon.droploottables.condition.NicknameCondition
+import us.timinc.mc.cobblemon.droploottables.condition.OriginalTrainerCondition
+import us.timinc.mc.cobblemon.droploottables.condition.PersistentDataCondition
+import us.timinc.mc.cobblemon.droploottables.condition.PersistentDataRangeCondition
 import us.timinc.mc.cobblemon.droploottables.condition.PokemonMatcherCondition
+import us.timinc.mc.cobblemon.droploottables.condition.PropertiesCondition
+import us.timinc.mc.cobblemon.droploottables.condition.ShinyCondition
+import us.timinc.mc.cobblemon.droploottables.condition.StatusCondition
 import us.timinc.mc.cobblemon.droploottables.condition.TeamMatcherCondition
+import us.timinc.mc.cobblemon.droploottables.condition.TeraTypeCondition
+import us.timinc.mc.cobblemon.droploottables.condition.TradeableCondition
 import us.timinc.mc.cobblemon.droploottables.data.DropperDataManager
 import us.timinc.mc.cobblemon.droploottables.dropper.CapturedDropper
 import us.timinc.mc.cobblemon.droploottables.dropper.DefeatedDropper
@@ -98,12 +122,36 @@ object DropLootTables : AbstractMod<DropLootTables.DropLootTablesConfig>(MOD_ID,
         }
 
         object DropConditionKeys {
-            val CAUGHT_BALL = modResource("caught_ball")
-            val KNOWLEDGE_LEVEL = modResource("knowledge_level")
-            val POKEMON_MATCHER = modResource("pokemon_matcher")
-            val TEAM_MATCHER = modResource("team_matcher")
             val ABILITY = modResource("ability")
+            val ASPECTS = modResource("aspects")
+            val CAUGHT_BALL = modResource("caught_ball")
+            val DYNAMAX_LEVEL = modResource("dynamax_level")
+            val EGG_GROUPS = modResource("egg_group")
+            val ELEMENTAL_TYPE = modResource("type")
+            val EV = modResource("ev")
+            val FRIENDSHIP = modResource("friendship")
+            val GENDER = modResource("gender")
+            val GMAX = modResource("gmax")
+            val HELD_ITEM = modResource("held_item")
+            val HIDDEN_ABILITY = modResource("hidden_ability")
+            val IV = modResource("iv")
+            val KNOWLEDGE_LEVEL = modResource("knowledge_level")
+            val LABEL = modResource("label")
+            val LEVEL = modResource("level")
             val MOVES = modResource("moves")
+            val MOVE_TYPES = modResource("move_types")
+            val NATURE = modResource("nature")
+            val NICKNAME = modResource("nickname")
+            val ORIGINAL_TRAINER = modResource("original_trainer")
+            val PERSISTENT_DATA = modResource("persistent_data")
+            val PERSISTENT_DATA_RANGE = modResource("persistent_data_range")
+            val POKEMON_MATCHER = modResource("pokemon_matcher")
+            val PROPERTIES = modResource("properties")
+            val SHINY = modResource("shiny")
+            val STATUS = modResource("status")
+            val TEAM_MATCHER = modResource("team_matcher")
+            val TERA_TYPE = modResource("tera_type")
+            val TRADEABLE = modResource("tradeable")
         }
 
         object LootParamKeys {
@@ -153,17 +201,66 @@ object DropLootTables : AbstractMod<DropLootTables.DropLootTablesConfig>(MOD_ID,
     }
 
     object LootItemConditionTypes {
-        val CAUGHT_BALL_CONDITION = register(DataKeys.DropConditionKeys.CAUGHT_BALL, CaughtBallCondition.CODEC)
-        val KNOWLEDGE_LEVEL_CONDITION =
-            register(DataKeys.DropConditionKeys.KNOWLEDGE_LEVEL, KnowledgeLevelCondition.CODEC)
-        val POKEMON_MATCHER_CONDITION =
-            register(DataKeys.DropConditionKeys.POKEMON_MATCHER, PokemonMatcherCondition.CODEC)
-        val TEAM_MATCHER_CONDITION =
-            register(DataKeys.DropConditionKeys.TEAM_MATCHER, TeamMatcherCondition.CODEC)
         val ABILITY_CONDITION =
             register(DataKeys.DropConditionKeys.ABILITY, AbilityCondition.CODEC)
+        val ASPECTS_CONDITION =
+            register(DataKeys.DropConditionKeys.ASPECTS, AspectsCondition.CODEC)
+        val CAUGHT_BALL_CONDITION =
+            register(DataKeys.DropConditionKeys.CAUGHT_BALL, CaughtBallCondition.CODEC)
+        val DYNAMAX_LEVEL_CONDITION =
+            register(DataKeys.DropConditionKeys.DYNAMAX_LEVEL, DynamaxLevelCondition.CODEC)
+        val EGG_GROUP_CONDITION =
+            register(DataKeys.DropConditionKeys.EGG_GROUPS, EggGroupCondition.CODEC)
+        val ELEMENTAL_TYPES_CONDITION =
+            register(DataKeys.DropConditionKeys.ELEMENTAL_TYPE, ElementalTypeCondition.CODEC)
+        val EV_CONDITION =
+            register(DataKeys.DropConditionKeys.EV, EvCondition.CODEC)
+        val FRIENDSHIP_CONDITION =
+            register(DataKeys.DropConditionKeys.FRIENDSHIP, FriendshipLevelCondition.CODEC)
+        val GENDER_CONDITION =
+            register(DataKeys.DropConditionKeys.GENDER, GenderCondition.CODEC)
+        val GMAX_CONDITION =
+            register(DataKeys.DropConditionKeys.GMAX, GmaxCondition.CODEC)
+        val HELD_ITEM_CONDITION =
+            register(DataKeys.DropConditionKeys.HELD_ITEM, HeldItemCondition.CODEC)
+        val HIDDEN_ABILITY_CONDITION =
+            register(DataKeys.DropConditionKeys.HIDDEN_ABILITY, HiddenAbilityCondition.CODEC)
+        val IV_CONDITION =
+            register(DataKeys.DropConditionKeys.IV, IvCondition.CODEC)
+        val KNOWLEDGE_LEVEL_CONDITION =
+            register(DataKeys.DropConditionKeys.KNOWLEDGE_LEVEL, KnowledgeLevelCondition.CODEC)
+        val LABEL_CONDITION =
+            register(DataKeys.DropConditionKeys.LABEL, LabelCondition.CODEC)
+        val LEVEL_CONDITION =
+            register(DataKeys.DropConditionKeys.LEVEL, LevelCondition.CODEC)
         val MOVES_CONDITION =
             register(DataKeys.DropConditionKeys.MOVES, MovesCondition.CODEC)
+        val MOVE_TYPES_CONDITION =
+            register(DataKeys.DropConditionKeys.MOVE_TYPES, MoveTypesCondition.CODEC)
+        val NATURE_CONDITION =
+            register(DataKeys.DropConditionKeys.NATURE, NatureCondition.CODEC)
+        val NICKNAME_CONDITION =
+            register(DataKeys.DropConditionKeys.NICKNAME, NicknameCondition.CODEC)
+        val ORIGINAL_TRAINER_CONDITION =
+            register(DataKeys.DropConditionKeys.ORIGINAL_TRAINER, OriginalTrainerCondition.CODEC)
+        val PERSISTENT_DATA_CONDITION =
+            register(DataKeys.DropConditionKeys.PERSISTENT_DATA, PersistentDataCondition.CODEC)
+        val PERSISTENT_DATA_RANGE_CONDITION =
+            register(DataKeys.DropConditionKeys.PERSISTENT_DATA_RANGE, PersistentDataRangeCondition.CODEC)
+        val POKEMON_MATCHER_CONDITION =
+            register(DataKeys.DropConditionKeys.POKEMON_MATCHER, PokemonMatcherCondition.CODEC)
+        val PROPERTIES_CONDITION =
+            register(DataKeys.DropConditionKeys.PROPERTIES, PropertiesCondition.CODEC)
+        val SHINY_CONDITION =
+            register(DataKeys.DropConditionKeys.SHINY, ShinyCondition.CODEC)
+        val STATUS_CONDITION =
+            register(DataKeys.DropConditionKeys.STATUS, StatusCondition.CODEC)
+        val TEAM_MATCHER_CONDITION =
+            register(DataKeys.DropConditionKeys.TEAM_MATCHER, TeamMatcherCondition.CODEC)
+        val TERA_TYPE_CONDITION =
+            register(DataKeys.DropConditionKeys.TERA_TYPE, TeraTypeCondition.CODEC)
+        val TRADEABLE_CONDITION =
+            register(DataKeys.DropConditionKeys.TRADEABLE, TradeableCondition.CODEC)
 
         fun <T : LootItemCondition> register(id: ResourceLocation, codec: MapCodec<T>): LootItemConditionType {
             return Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, id, LootItemConditionType(codec))
