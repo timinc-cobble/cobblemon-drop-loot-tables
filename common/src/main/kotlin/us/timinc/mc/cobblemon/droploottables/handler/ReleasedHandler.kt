@@ -39,4 +39,7 @@ object ReleasedHandler : DropHandler<ReleasedDropper.Context, ReleasedDropper, R
 
     override val selectedDropTargetTypes: List<ResourceLocation>
         get() = DropLootTables.config.releasedDropTargets.map { it.asIdentifierDefaultingNamespace(MOD_ID) }
+
+    override fun processLegacyDrops(evt: ReleasePokemonEvent.Post) =
+        getLegacyDrops(evt.pokemon.form, "release", getContext(evt).toLootParams(), getLevel(evt)!!)
 }

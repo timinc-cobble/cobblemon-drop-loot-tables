@@ -1,11 +1,13 @@
 package us.timinc.mc.cobblemon.droploottables.api
 
+import com.cobblemon.mod.common.pokemon.FormData
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.item.ItemStack
 import us.timinc.mc.cobblemon.droploottables.DropLootTables
+import us.timinc.mc.cobblemon.droploottables.MOD_ID
 import us.timinc.mc.cobblemon.droploottables.data.DropperDataManager
 
 interface DropHandler<C : DropContext, D : Dropper<C>, E> {
@@ -42,6 +44,8 @@ interface DropHandler<C : DropContext, D : Dropper<C>, E> {
             toDrop
         }?.toMutableList() ?: mutableListOf()
         drops.addAll(processOtherDrops(evt))
+        if (DropLootTables.config.legacyMode)
+            drops.addAll(processLegacyDrops(evt))
         drops.shuffle()
 
         for (drop in drops) {
@@ -86,6 +90,31 @@ interface DropHandler<C : DropContext, D : Dropper<C>, E> {
     fun isRelevantEvent(evt: E): Boolean = getLevel(evt) != null
 
     fun processOtherDrops(evt: E): List<ItemStack> = emptyList()
+
+    fun processLegacyDrops(evt: E): List<ItemStack> = emptyList()
+
+    @Deprecated("Old pre-determined paths for loot tables, please use dopper data layer")
+    fun getLegacyDrops(form: FormData,
+                       dropType: String,
+                       params: net.minecraft.world.level.storage.loot.LootParams,
+                       level: ServerLevel,
+    ) = dropFromTable(getAllDropId(dropType), params, level) +
+        dropFromTable(getFormDropId(form, dropType), params, level)
+
+    @Deprecated("Old pre-determined paths for loot tables, please use dopper data layer")
+    private fun getAllDropId(dropType: String): ResourceLocation =
+        ResourceLocation.fromNamespaceAndPath(MOD_ID, "$dropType/all")
+
+    @Deprecated("Old pre-determined paths for loot tables, please use dopper data layer")
+    private fun getFormDropId(form: FormData, dropType: String): ResourceLocation =
+        ResourceLocation.fromNamespaceAndPath(
+            MOD_ID,
+            "$dropType/${form.species.resourceIdentifier.path}${
+                if (form.name != "Normal") "/${
+                    form.name.lowercase().replace(Regex("[^a-z0-9/._-]"), "")
+                }" else ""
+            }"
+        )
 
     fun cleanup(evt: E) {}
 }

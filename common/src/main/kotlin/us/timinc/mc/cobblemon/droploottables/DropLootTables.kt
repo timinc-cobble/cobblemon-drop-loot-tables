@@ -92,6 +92,8 @@ object DropLootTables : AbstractMod<DropLootTables.DropLootTablesConfig>(MOD_ID,
         val starterChosenDropTargets: List<String> = listOf("player_inventory")
         val tickedDropTargets: List<String> = listOf("pokemon_world_position")
         val victoryDropTargets: List<String> = listOf("pokemon_world_position")
+        val legacyMode: Boolean = true
+        var granularDropPeriods: Map<String, String> = mapOf()
     }
 
     object DataKeys {

@@ -78,6 +78,13 @@ object KilledHandler : DropHandler<KilledDropper.Context, KilledDropper, Pokemon
         }
     }
 
+    override fun processLegacyDrops(evt: PokemonFaintedEvent): List<ItemStack> {
+        return if (isRelevantEvent(evt))
+            getLegacyDrops(evt.pokemon.form, "ko", getContext(evt).toLootParams(), getLevel(evt)!!)
+        else
+            emptyList()
+    }
+
     override fun cleanup(evt: PokemonFaintedEvent) {
         baseDrops.remove(evt.pokemon.uuid)
     }

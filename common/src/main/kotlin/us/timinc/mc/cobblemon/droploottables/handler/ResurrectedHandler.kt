@@ -52,4 +52,7 @@ object ResurrectedHandler : DropHandler<ResurrectedDropper.Context, ResurrectedD
 
     override val selectedDropTargetTypes: List<ResourceLocation>
         get() = DropLootTables.config.resurrectedDropTargets.map { it.asIdentifierDefaultingNamespace(MOD_ID) }
+
+    override fun processLegacyDrops(evt: FossilRevivedEvent) =
+        getLegacyDrops(evt.pokemon.form, "resurrect", getContext(evt).toLootParams(), getLevel(evt)!!)
 }

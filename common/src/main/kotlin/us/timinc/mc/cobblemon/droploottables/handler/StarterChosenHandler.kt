@@ -47,4 +47,7 @@ object StarterChosenHandler : DropHandler<StarterChosenDropper.Context, StarterC
 
     override val selectedDropTargetTypes: List<ResourceLocation>
         get() = DropLootTables.config.starterChosenDropTargets.map { it.asIdentifierDefaultingNamespace(MOD_ID) }
+
+    override fun processLegacyDrops(evt: StarterChosenEvent) =
+        getLegacyDrops(evt.pokemon.form, "starter", getContext(evt).toLootParams(), getLevel(evt))
 }
