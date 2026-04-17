@@ -54,4 +54,7 @@ object VictoryHandler : DropHandler<VictoryDropper.Context, VictoryDropper, Sing
 
     override fun getLevel(evt: SingleVictoryEvent): ServerLevel? =
         evt.battle.players.firstNotNullOfOrNull(ServerPlayer::level) as? ServerLevel
+
+    override fun processLegacyDrops(evt: SingleVictoryEvent) =
+        getLegacyDrops(evt.winner.form, "victory", getContext(evt).toLootParams(), getLevel(evt)!!)
 }

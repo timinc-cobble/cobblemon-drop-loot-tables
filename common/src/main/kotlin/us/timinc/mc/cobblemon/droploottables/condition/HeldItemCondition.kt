@@ -1,8 +1,10 @@
 package us.timinc.mc.cobblemon.droploottables.condition
 
+import com.mojang.brigadier.StringReader
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.minecraft.commands.arguments.item.ItemParser
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.storage.loot.LootContext
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition
@@ -12,29 +14,39 @@ import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKe
 import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
 
 @Deprecated("Use the newly improved pokemon_matcher condition, it now accommodates this.")
-class MovesCondition(
+class HeldItemCondition(
     val targetPokemon: ResourceLocation = FOCUS_POKEMON,
-    val moves: List<String>,
-    val all: Boolean = false
+    val item: String,
 ) : LootItemCondition {
     companion object {
-        val CODEC: MapCodec<MovesCondition> = RecordCodecBuilder.mapCodec { instance ->
+        val CODEC: MapCodec<HeldItemCondition> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
                 DropLootTables.RESOURCE_LOCATION_CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
-                    .forGetter(MovesCondition::targetPokemon),
-                Codec.STRING.listOf().fieldOf("moves")
-                    .forGetter(MovesCondition::moves),
-                Codec.BOOL.fieldOf("all").orElse(false)
-                    .forGetter(MovesCondition::all),
-            ).apply(instance, ::MovesCondition)
+                    .forGetter(HeldItemCondition::targetPokemon),
+                Codec.STRING.fieldOf("item")
+                    .forGetter(HeldItemCondition::item)
+            ).apply(instance, ::HeldItemCondition)
         }
     }
 
-    override fun getType(): LootItemConditionType = DropLootTables.LootItemConditionTypes.MOVES_CONDITION
+    override fun getType(): LootItemConditionType = DropLootTables.LootItemConditionTypes.HELD_ITEM_CONDITION
 
     override fun test(ctx: LootContext): Boolean {
         val pokemon = PokemonParamExtractor.getFrom(ctx, targetPokemon) ?: return false
-        val pokemonMoveNames = pokemon.moveSet.map { it.name }
-        return if (all) moves.all(pokemonMoveNames::contains) else moves.any(pokemonMoveNames::contains)
+
+        val heldItem = pokemon.heldItem()
+        if (heldItem.isEmpty) return false
+
+        val parser = ItemParser(ctx.level.server.registryAccess())
+        val result = parser.parse(StringReader(item))
+
+        if (!heldItem.`is`(result.item)) return false
+
+        for (entry in result.components.entrySet()) {
+            val targetPropValue = heldItem.get(entry.key)
+            if (targetPropValue != entry.value.get()) return false
+        }
+
+        return true
     }
 }

@@ -1,5 +1,6 @@
 package us.timinc.mc.cobblemon.droploottables.condition
 
+import com.cobblemon.mod.common.api.pokemon.PokemonProperties
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
@@ -12,29 +13,26 @@ import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKe
 import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
 
 @Deprecated("Use the newly improved pokemon_matcher condition, it now accommodates this.")
-class MovesCondition(
+class PropertiesCondition(
     val targetPokemon: ResourceLocation = FOCUS_POKEMON,
-    val moves: List<String>,
-    val all: Boolean = false
+    val properties: String,
 ) : LootItemCondition {
     companion object {
-        val CODEC: MapCodec<MovesCondition> = RecordCodecBuilder.mapCodec { instance ->
+        val CODEC: MapCodec<PropertiesCondition> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
                 DropLootTables.RESOURCE_LOCATION_CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
-                    .forGetter(MovesCondition::targetPokemon),
-                Codec.STRING.listOf().fieldOf("moves")
-                    .forGetter(MovesCondition::moves),
-                Codec.BOOL.fieldOf("all").orElse(false)
-                    .forGetter(MovesCondition::all),
-            ).apply(instance, ::MovesCondition)
+                    .forGetter(PropertiesCondition::targetPokemon),
+                Codec.STRING.fieldOf("properties")
+                    .forGetter(PropertiesCondition::properties),
+            ).apply(instance, ::PropertiesCondition)
         }
     }
 
-    override fun getType(): LootItemConditionType = DropLootTables.LootItemConditionTypes.MOVES_CONDITION
+    override fun getType(): LootItemConditionType = DropLootTables.LootItemConditionTypes.PROPERTIES_CONDITION
 
     override fun test(ctx: LootContext): Boolean {
         val pokemon = PokemonParamExtractor.getFrom(ctx, targetPokemon) ?: return false
-        val pokemonMoveNames = pokemon.moveSet.map { it.name }
-        return if (all) moves.all(pokemonMoveNames::contains) else moves.any(pokemonMoveNames::contains)
+        val properties: PokemonProperties = PokemonProperties.parse(properties)
+        return properties.matches(pokemon)
     }
 }

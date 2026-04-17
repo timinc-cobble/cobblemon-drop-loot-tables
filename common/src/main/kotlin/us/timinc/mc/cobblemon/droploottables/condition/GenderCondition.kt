@@ -12,29 +12,26 @@ import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKe
 import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
 
 @Deprecated("Use the newly improved pokemon_matcher condition, it now accommodates this.")
-class MovesCondition(
+class GenderCondition(
     val targetPokemon: ResourceLocation = FOCUS_POKEMON,
-    val moves: List<String>,
-    val all: Boolean = false
+    val genders: List<String>,
 ) : LootItemCondition {
     companion object {
-        val CODEC: MapCodec<MovesCondition> = RecordCodecBuilder.mapCodec { instance ->
+        val CODEC: MapCodec<GenderCondition> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
                 DropLootTables.RESOURCE_LOCATION_CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
-                    .forGetter(MovesCondition::targetPokemon),
-                Codec.STRING.listOf().fieldOf("moves")
-                    .forGetter(MovesCondition::moves),
-                Codec.BOOL.fieldOf("all").orElse(false)
-                    .forGetter(MovesCondition::all),
-            ).apply(instance, ::MovesCondition)
+                    .forGetter(GenderCondition::targetPokemon),
+                Codec.STRING.listOf().fieldOf("genders")
+                    .forGetter(GenderCondition::genders)
+            ).apply(instance, ::GenderCondition)
         }
     }
 
-    override fun getType(): LootItemConditionType = DropLootTables.LootItemConditionTypes.MOVES_CONDITION
+    override fun getType(): LootItemConditionType = DropLootTables.LootItemConditionTypes.GENDER_CONDITION
 
     override fun test(ctx: LootContext): Boolean {
         val pokemon = PokemonParamExtractor.getFrom(ctx, targetPokemon) ?: return false
-        val pokemonMoveNames = pokemon.moveSet.map { it.name }
-        return if (all) moves.all(pokemonMoveNames::contains) else moves.any(pokemonMoveNames::contains)
+        val pokemonGender = pokemon.gender.name
+        return genders.contains(pokemonGender.lowercase())
     }
 }
