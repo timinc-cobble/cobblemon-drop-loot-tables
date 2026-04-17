@@ -13,7 +13,7 @@ import us.timinc.mc.cobblemon.droploottables.DropLootTables
 import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKeys.FOCUS_POKEMON
 import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
 
-@Deprecated ("Use the newly improved pokemon_matcher condition, it now accommodates this.")
+@Deprecated("Use the newly improved pokemon_matcher condition, it now accommodates this.")
 class EggGroupCondition(
     val targetPokemon: ResourceLocation = FOCUS_POKEMON,
     val eggGroups: List<EggGroup>,
@@ -28,7 +28,7 @@ class EggGroupCondition(
 
         val CODEC: MapCodec<EggGroupCondition> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
-                ResourceLocation.CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
+                DropLootTables.RESOURCE_LOCATION_CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
                     .forGetter(EggGroupCondition::targetPokemon),
                 EGG_GROUP_BY_STRING_CODEC.listOf().fieldOf("egg_groups")
                     .forGetter(EggGroupCondition::eggGroups),

@@ -13,7 +13,7 @@ import us.timinc.mc.cobblemon.droploottables.DropLootTables
 import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKeys.FOCUS_POKEMON
 import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
 
-@Deprecated ("Use the newly improved pokemon_matcher condition, it now accommodates this.")
+@Deprecated("Use the newly improved pokemon_matcher condition, it now accommodates this.")
 class HeldItemCondition(
     val targetPokemon: ResourceLocation = FOCUS_POKEMON,
     val item: String,
@@ -21,7 +21,7 @@ class HeldItemCondition(
     companion object {
         val CODEC: MapCodec<HeldItemCondition> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
-                ResourceLocation.CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
+                DropLootTables.RESOURCE_LOCATION_CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
                     .forGetter(HeldItemCondition::targetPokemon),
                 Codec.STRING.fieldOf("item")
                     .forGetter(HeldItemCondition::item)

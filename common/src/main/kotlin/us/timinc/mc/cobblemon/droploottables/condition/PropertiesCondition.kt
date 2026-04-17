@@ -12,7 +12,7 @@ import us.timinc.mc.cobblemon.droploottables.DropLootTables
 import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKeys.FOCUS_POKEMON
 import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
 
-@Deprecated ("Use the newly improved pokemon_matcher condition, it now accommodates this.")
+@Deprecated("Use the newly improved pokemon_matcher condition, it now accommodates this.")
 class PropertiesCondition(
     val targetPokemon: ResourceLocation = FOCUS_POKEMON,
     val properties: String,
@@ -20,10 +20,10 @@ class PropertiesCondition(
     companion object {
         val CODEC: MapCodec<PropertiesCondition> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
-                ResourceLocation.CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
+                DropLootTables.RESOURCE_LOCATION_CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
                     .forGetter(PropertiesCondition::targetPokemon),
                 Codec.STRING.fieldOf("properties")
-                    .forGetter { it.properties }
+                    .forGetter(PropertiesCondition::properties),
             ).apply(instance, ::PropertiesCondition)
         }
     }

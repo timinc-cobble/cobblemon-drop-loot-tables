@@ -1,7 +1,5 @@
 package us.timinc.mc.cobblemon.droploottables.condition
 
-import com.cobblemon.mod.common.util.asIdentifierDefaultingNamespace
-import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceLocation
@@ -9,35 +7,35 @@ import net.minecraft.world.level.storage.loot.LootContext
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType
 import us.timinc.mc.cobblemon.droploottables.DropLootTables
-import us.timinc.mc.cobblemon.droploottables.MOD_ID
+import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKeys.FOCUS_PLAYER
 import us.timinc.mc.cobblemon.droploottables.paramextractor.TeamParamExtractor
 import us.timinc.mc.cobblemon.timcore.LimitedList
 import us.timinc.mc.cobblemon.timcore.PokemonMatcher
 
 class TeamMatcherCondition(
-    val targetTeam: ResourceLocation = DropLootTables.DataKeys.LootParamKeys.FOCUS_PLAYER,
+    val targetTeam: ResourceLocation = FOCUS_PLAYER,
     val matcher: Set<PokemonMatcher>,
     val antiMatcher: Set<PokemonMatcher>,
 ) : LootItemCondition {
+    constructor(
+        targetTeam: ResourceLocation = FOCUS_PLAYER,
+        matcher: Iterable<PokemonMatcher>,
+        antiMatcher: Iterable<PokemonMatcher>,
+    ) : this(targetTeam, matcher.toSet(), antiMatcher.toSet())
+
     companion object {
         val CODEC: MapCodec<TeamMatcherCondition> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
-                Codec.STRING.optionalFieldOf(
+                DropLootTables.RESOURCE_LOCATION_CODEC.optionalFieldOf(
                     "target_team",
-                    DropLootTables.DataKeys.LootParamKeys.FOCUS_POKEMON.toString()
+                    FOCUS_PLAYER
                 )
-                    .forGetter { it.targetTeam.toString() },
+                    .forGetter(TeamMatcherCondition::targetTeam),
                 PokemonMatcher.STRING_CODEC.listOf().optionalFieldOf("matcher", emptyList())
                     .forGetter { it.matcher.toList() },
                 PokemonMatcher.STRING_CODEC.listOf().optionalFieldOf("anti_matcher", emptyList())
                     .forGetter { it.antiMatcher.toList() },
-            ).apply(instance) { target, matcher, antiMatcher ->
-                TeamMatcherCondition(
-                    target.asIdentifierDefaultingNamespace(MOD_ID),
-                    matcher.toSet(),
-                    antiMatcher.toSet()
-                )
-            }
+            ).apply(instance, ::TeamMatcherCondition)
         }
     }
 
