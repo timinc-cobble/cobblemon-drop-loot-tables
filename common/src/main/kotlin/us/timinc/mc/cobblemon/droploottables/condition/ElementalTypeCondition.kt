@@ -12,7 +12,7 @@ import us.timinc.mc.cobblemon.droploottables.DropLootTables
 import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKeys.FOCUS_POKEMON
 import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
 
-@Deprecated ("Use the newly improved pokemon_matcher condition, it now accommodates this.")
+@Deprecated("Use the newly improved pokemon_matcher condition, it now accommodates this.")
 class ElementalTypeCondition(
     val targetPokemon: ResourceLocation = FOCUS_POKEMON,
     val elements: List<ElementalType>,
@@ -21,7 +21,7 @@ class ElementalTypeCondition(
     companion object {
         val CODEC: MapCodec<ElementalTypeCondition> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
-                ResourceLocation.CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
+                DropLootTables.RESOURCE_LOCATION_CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
                     .forGetter(ElementalTypeCondition::targetPokemon),
                 ElementalType.BY_STRING_CODEC.listOf().fieldOf("elements")
                     .forGetter(ElementalTypeCondition::elements),

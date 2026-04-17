@@ -11,7 +11,7 @@ import us.timinc.mc.cobblemon.droploottables.DropLootTables
 import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKeys.FOCUS_POKEMON
 import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
 
-@Deprecated ("Use the newly improved pokemon_matcher condition, it now accommodates this.")
+@Deprecated("Use the newly improved pokemon_matcher condition, it now accommodates this.")
 class NicknameCondition(
     val targetPokemon: ResourceLocation = FOCUS_POKEMON,
     val name: String,
@@ -20,7 +20,7 @@ class NicknameCondition(
     companion object {
         val CODEC: MapCodec<NicknameCondition> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
-                ResourceLocation.CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
+                DropLootTables.RESOURCE_LOCATION_CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
                     .forGetter(NicknameCondition::targetPokemon),
                 Codec.STRING.fieldOf("name")
                     .forGetter(NicknameCondition::name),

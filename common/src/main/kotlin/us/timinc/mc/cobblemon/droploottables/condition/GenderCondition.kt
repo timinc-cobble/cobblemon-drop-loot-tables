@@ -6,12 +6,12 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.storage.loot.LootContext
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition
-import us.timinc.mc.cobblemon.droploottables.DropLootTables
-import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType
+import us.timinc.mc.cobblemon.droploottables.DropLootTables
 import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKeys.FOCUS_POKEMON
+import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
 
-@Deprecated ("Use the newly improved pokemon_matcher condition, it now accommodates this.")
+@Deprecated("Use the newly improved pokemon_matcher condition, it now accommodates this.")
 class GenderCondition(
     val targetPokemon: ResourceLocation = FOCUS_POKEMON,
     val genders: List<String>,
@@ -19,7 +19,7 @@ class GenderCondition(
     companion object {
         val CODEC: MapCodec<GenderCondition> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
-                ResourceLocation.CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
+                DropLootTables.RESOURCE_LOCATION_CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
                     .forGetter(GenderCondition::targetPokemon),
                 Codec.STRING.listOf().fieldOf("genders")
                     .forGetter(GenderCondition::genders)

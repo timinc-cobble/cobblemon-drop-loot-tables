@@ -21,7 +21,7 @@ class HiddenAbilityCondition(
     companion object {
         val CODEC: MapCodec<HiddenAbilityCondition> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
-                ResourceLocation.CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
+                DropLootTables.RESOURCE_LOCATION_CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
                     .forGetter(HiddenAbilityCondition::targetPokemon),
                 Codec.BOOL.fieldOf("value").orElse(true)
                     .forGetter(HiddenAbilityCondition::value)
