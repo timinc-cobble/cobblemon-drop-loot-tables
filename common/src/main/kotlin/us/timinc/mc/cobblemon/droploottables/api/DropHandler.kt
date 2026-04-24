@@ -56,7 +56,7 @@ interface DropHandler<C : DropContext, D : Dropper<C>, E> {
             }
         }
 
-        cleanup(evt)
+        cleanup(evt, drops)
     }
 
     val dropTargetTypes: MutableMap<ResourceLocation, (evt: E) -> DropTarget?>
@@ -116,5 +116,5 @@ interface DropHandler<C : DropContext, D : Dropper<C>, E> {
             }"
         )
 
-    fun cleanup(evt: E) {}
+    fun cleanup(evt: E, drops: MutableList<ItemStack>) {}
 }
