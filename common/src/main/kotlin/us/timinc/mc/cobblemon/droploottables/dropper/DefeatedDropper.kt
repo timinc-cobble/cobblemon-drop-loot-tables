@@ -19,7 +19,7 @@ import us.timinc.mc.cobblemon.droploottables.api.DropContext
 import us.timinc.mc.cobblemon.droploottables.api.Dropper
 import us.timinc.mc.cobblemon.droploottables.api.Dropper.Companion.CodecPieces
 import us.timinc.mc.cobblemon.droploottables.api.DropperType
-import java.util.*
+import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class DefeatedDropper(

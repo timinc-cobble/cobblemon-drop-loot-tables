@@ -56,7 +56,7 @@ interface DropHandler<C : DropContext, D : Dropper<C>, E> {
             }
         }
 
-        cleanup(evt)
+        cleanup(evt, drops)
     }
 
     val dropTargetTypes: MutableMap<ResourceLocation, (evt: E) -> DropTarget?>
@@ -93,19 +93,20 @@ interface DropHandler<C : DropContext, D : Dropper<C>, E> {
 
     fun processLegacyDrops(evt: E): List<ItemStack> = emptyList()
 
-    @Deprecated("Old pre-determined paths for loot tables, please use dopper data layer")
-    fun getLegacyDrops(form: FormData,
-                       dropType: String,
-                       params: net.minecraft.world.level.storage.loot.LootParams,
-                       level: ServerLevel,
+    @Deprecated("Old pre-determined paths for loot tables, please use dropper data layer")
+    fun getLegacyDrops(
+        form: FormData,
+        dropType: String,
+        params: net.minecraft.world.level.storage.loot.LootParams,
+        level: ServerLevel,
     ) = dropFromTable(getAllDropId(dropType), params, level) +
-        dropFromTable(getFormDropId(form, dropType), params, level)
+            dropFromTable(getFormDropId(form, dropType), params, level)
 
-    @Deprecated("Old pre-determined paths for loot tables, please use dopper data layer")
+    @Deprecated("Old pre-determined paths for loot tables, please use dropper data layer")
     private fun getAllDropId(dropType: String): ResourceLocation =
         ResourceLocation.fromNamespaceAndPath(MOD_ID, "$dropType/all")
 
-    @Deprecated("Old pre-determined paths for loot tables, please use dopper data layer")
+    @Deprecated("Old pre-determined paths for loot tables, please use dropper data layer")
     private fun getFormDropId(form: FormData, dropType: String): ResourceLocation =
         ResourceLocation.fromNamespaceAndPath(
             MOD_ID,
@@ -116,5 +117,5 @@ interface DropHandler<C : DropContext, D : Dropper<C>, E> {
             }"
         )
 
-    fun cleanup(evt: E) {}
+    fun cleanup(evt: E, drops: MutableList<ItemStack>) {}
 }

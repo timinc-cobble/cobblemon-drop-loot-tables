@@ -19,7 +19,7 @@ import us.timinc.mc.cobblemon.droploottables.droptarget.PokemonEntityDropTarget
 import us.timinc.mc.cobblemon.droploottables.droptarget.PokemonHeldItemDropTarget
 import us.timinc.mc.cobblemon.droploottables.droptarget.PokemonHeldItemReplaceDropTarget
 import us.timinc.mc.cobblemon.droploottables.event.SingleDefeatEvent
-import java.util.*
+import java.util.UUID
 
 object DefeatedHandler : DropHandler<DefeatedDropper.Context, DefeatedDropper, SingleDefeatEvent> {
     val baseDrops: MutableMap<UUID, List<DropEntry>> = mutableMapOf()
@@ -83,7 +83,7 @@ object DefeatedHandler : DropHandler<DefeatedDropper.Context, DefeatedDropper, S
     override fun processLegacyDrops(evt: SingleDefeatEvent) =
         getLegacyDrops(evt.winner.form, "ko", getContext(evt).toLootParams(), getLevel(evt)!!)
 
-    override fun cleanup(evt: SingleDefeatEvent) {
+    override fun cleanup(evt: SingleDefeatEvent, drops: MutableList<ItemStack>) {
         baseDrops.remove(evt.winner.uuid)
     }
 }

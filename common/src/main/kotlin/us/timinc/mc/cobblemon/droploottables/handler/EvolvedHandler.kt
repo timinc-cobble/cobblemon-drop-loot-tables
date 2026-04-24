@@ -18,7 +18,7 @@ import us.timinc.mc.cobblemon.droploottables.droptarget.PlayerEnderChestDropTarg
 import us.timinc.mc.cobblemon.droploottables.droptarget.PokemonEntityDropTarget
 import us.timinc.mc.cobblemon.droploottables.droptarget.PokemonHeldItemDropTarget
 import us.timinc.mc.cobblemon.droploottables.droptarget.PokemonHeldItemReplaceDropTarget
-import java.util.*
+import java.util.UUID
 
 object EvolvedHandler : DropHandler<EvolvedDropper.Context, EvolvedDropper, EvolutionCompleteEvent> {
     val baseDrops: MutableMap<UUID, MutableList<DropEntry>> = mutableMapOf()
@@ -88,7 +88,7 @@ object EvolvedHandler : DropHandler<EvolvedDropper.Context, EvolvedDropper, Evol
     override fun processLegacyDrops(evt: EvolutionCompleteEvent) =
         getLegacyDrops(evt.pokemon.form, "evolve", getContext(evt).toLootParams(), getLevel(evt)!!)
 
-    override fun cleanup(evt: EvolutionCompleteEvent) {
+    override fun cleanup(evt: EvolutionCompleteEvent, drops: MutableList<ItemStack>) {
         evt.pokemon.getOwnerUUID()?.let(whoEvolvingWho::remove)
         baseDrops.remove(evt.pokemon.uuid)
     }

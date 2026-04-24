@@ -1,14 +1,13 @@
 package us.timinc.mc.cobblemon.droploottables.handler
 
+import com.cobblemon.mod.common.api.pokemon.PokemonProperties
+import com.cobblemon.mod.common.pokemon.Pokemon
+import com.cobblemon.mod.common.util.asIdentifierDefaultingNamespace
 import com.google.gson.JsonParser
 import com.mojang.serialization.JsonOps
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
-import com.cobblemon.mod.common.api.pokemon.PokemonProperties
-import com.cobblemon.mod.common.pokemon.Pokemon
-import com.cobblemon.mod.common.util.asIdentifierDefaultingNamespace
-import us.timinc.mc.cobblemon.timcore.codec.INT_RANGE_CODEC
-import us.timinc.mc.cobblemon.timcore.event.PokemonEntityTickedEvent
+import net.minecraft.world.item.ItemStack
 import us.timinc.mc.cobblemon.droploottables.DropLootTables
 import us.timinc.mc.cobblemon.droploottables.DropLootTables.config
 import us.timinc.mc.cobblemon.droploottables.MOD_ID
@@ -20,6 +19,8 @@ import us.timinc.mc.cobblemon.droploottables.droptarget.PlayerEnderChestDropTarg
 import us.timinc.mc.cobblemon.droploottables.droptarget.PokemonEntityDropTarget
 import us.timinc.mc.cobblemon.droploottables.droptarget.PokemonHeldItemDropTarget
 import us.timinc.mc.cobblemon.droploottables.droptarget.PokemonHeldItemReplaceDropTarget
+import us.timinc.mc.cobblemon.timcore.codec.INT_RANGE_CODEC
+import us.timinc.mc.cobblemon.timcore.event.PokemonEntityTickedEvent
 
 object TickedHandler : DropHandler<TickedDropper.Context, TickedDropper, PokemonEntityTickedEvent> {
     override val dropperTypeId: ResourceLocation = DropLootTables.DataKeys.DropperTypes.TICKED
@@ -44,7 +45,7 @@ object TickedHandler : DropHandler<TickedDropper.Context, TickedDropper, Pokemon
         )
 
     override val selectedDropTargetTypes: List<ResourceLocation>
-        get() = DropLootTables.config.tickedDropTargets.map { it.asIdentifierDefaultingNamespace(MOD_ID) }
+        get() = config.tickedDropTargets.map { it.asIdentifierDefaultingNamespace(MOD_ID) }
 
     fun registerDropTargetType(id: ResourceLocation, getter: (evt: PokemonEntityTickedEvent) -> DropTarget?) {
         dropTargetTypes[id] = getter
@@ -94,7 +95,7 @@ object TickedHandler : DropHandler<TickedDropper.Context, TickedDropper, Pokemon
         return false
     }
 
-    override fun cleanup(evt: PokemonEntityTickedEvent) {
+    override fun cleanup(evt: PokemonEntityTickedEvent, drops: MutableList<ItemStack>) {
         val context = getContext(evt)
         val droppers = getDroppers(context) ?: return
         val sounds = droppers.mapNotNull { it.sound }

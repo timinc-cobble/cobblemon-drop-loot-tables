@@ -19,7 +19,7 @@ import us.timinc.mc.cobblemon.droploottables.dropper.KilledDropper
 import us.timinc.mc.cobblemon.droploottables.droptarget.PlayerDropTarget
 import us.timinc.mc.cobblemon.droploottables.droptarget.PlayerEnderChestDropTarget
 import us.timinc.mc.cobblemon.droploottables.droptarget.PokemonEntityDropTarget
-import java.util.*
+import java.util.UUID
 
 object KilledHandler : DropHandler<KilledDropper.Context, KilledDropper, PokemonFaintedEvent> {
     val baseDrops: MutableMap<UUID, List<DropEntry>> = mutableMapOf()
@@ -85,7 +85,7 @@ object KilledHandler : DropHandler<KilledDropper.Context, KilledDropper, Pokemon
             emptyList()
     }
 
-    override fun cleanup(evt: PokemonFaintedEvent) {
+    override fun cleanup(evt: PokemonFaintedEvent, drops: MutableList<ItemStack>) {
         baseDrops.remove(evt.pokemon.uuid)
     }
 
