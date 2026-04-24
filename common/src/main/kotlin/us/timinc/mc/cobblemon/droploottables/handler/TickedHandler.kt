@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties
 import com.cobblemon.mod.common.pokemon.Pokemon
 import com.cobblemon.mod.common.util.asIdentifierDefaultingNamespace
+import net.minecraft.world.item.ItemStack
 import us.timinc.mc.cobblemon.timcore.codec.INT_RANGE_CODEC
 import us.timinc.mc.cobblemon.timcore.event.PokemonEntityTickedEvent
 import us.timinc.mc.cobblemon.droploottables.DropLootTables
@@ -94,7 +95,7 @@ object TickedHandler : DropHandler<TickedDropper.Context, TickedDropper, Pokemon
         return false
     }
 
-    override fun cleanup(evt: PokemonEntityTickedEvent) {
+    override fun cleanup(evt: PokemonEntityTickedEvent, drops: MutableList<ItemStack>) {
         val context = getContext(evt)
         val droppers = getDroppers(context) ?: return
         val sounds = droppers.mapNotNull { it.sound }

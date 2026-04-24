@@ -85,7 +85,7 @@ object KilledHandler : DropHandler<KilledDropper.Context, KilledDropper, Pokemon
             emptyList()
     }
 
-    override fun cleanup(evt: PokemonFaintedEvent) {
+    override fun cleanup(evt: PokemonFaintedEvent, drops: MutableList<ItemStack>) {
         baseDrops.remove(evt.pokemon.uuid)
     }
 
