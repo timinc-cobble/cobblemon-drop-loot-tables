@@ -19,7 +19,7 @@ import us.timinc.mc.cobblemon.droploottables.droptarget.PokemonEntityDropTarget
 import us.timinc.mc.cobblemon.droploottables.droptarget.PokemonHeldItemDropTarget
 import us.timinc.mc.cobblemon.droploottables.droptarget.PokemonHeldItemReplaceDropTarget
 import us.timinc.mc.cobblemon.droploottables.event.SingleDefeatEvent
-import java.util.*
+import java.util.UUID
 
 object DefeatedHandler : DropHandler<DefeatedDropper.Context, DefeatedDropper, SingleDefeatEvent> {
     val baseDrops: MutableMap<UUID, List<DropEntry>> = mutableMapOf()

@@ -1,5 +1,7 @@
 package us.timinc.mc.cobblemon.droploottables.condition
 
+import com.cobblemon.mod.common.api.Priority
+import com.cobblemon.mod.common.pokemon.Pokemon
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
@@ -7,13 +9,11 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.storage.loot.LootContext
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType
+import us.timinc.mc.cobblemon.droploottables.DropLootTables
 import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKeys.FOCUS_POKEMON
 import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
-import com.cobblemon.mod.common.api.Priority
-import com.cobblemon.mod.common.pokemon.Pokemon
-import us.timinc.mc.cobblemon.droploottables.DropLootTables
 
-@Deprecated ("Use the newly improved pokemon_matcher condition, it now accommodates this.")
+@Deprecated("Use the newly improved pokemon_matcher condition, it now accommodates this.")
 class HiddenAbilityCondition(
     val targetPokemon: ResourceLocation = FOCUS_POKEMON,
     val value: Boolean = true,

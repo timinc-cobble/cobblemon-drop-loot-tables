@@ -18,7 +18,7 @@ import us.timinc.mc.cobblemon.droploottables.droptarget.PlayerEnderChestDropTarg
 import us.timinc.mc.cobblemon.droploottables.droptarget.PokemonEntityDropTarget
 import us.timinc.mc.cobblemon.droploottables.droptarget.PokemonHeldItemDropTarget
 import us.timinc.mc.cobblemon.droploottables.droptarget.PokemonHeldItemReplaceDropTarget
-import java.util.*
+import java.util.UUID
 
 object EvolvedHandler : DropHandler<EvolvedDropper.Context, EvolvedDropper, EvolutionCompleteEvent> {
     val baseDrops: MutableMap<UUID, MutableList<DropEntry>> = mutableMapOf()
