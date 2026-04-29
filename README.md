@@ -15,28 +15,28 @@ v1.7.3-1.9
 ## Features
 
 - Adds the ability to create loot tables for various events in the Cobblemon mod:
-  - When a Pokémon’s captured.
-  - When a Pokémon defeats another in a Pokémon battle.
-  - When a Pokémon evolves.
-  - When a player hatches a Pokémon from an egg.
-  - When a Pokémon is killed in the world.
-  - When a player releases a Pokémon from their PC.
-  - When a Pokémon is resurrected using the fossil revival machine.
-  - When a player chooses a starter Pokémon (great for starter-based starter kits!).
-  - When a Pokémon ticks in the world (optimized to be cheap).
-  - When a Pokémon participates in a battle on the victors’ side.
-  - When a Pokémon levels up.
+    - When a Pokémon’s captured.
+    - When a Pokémon defeats another in a Pokémon battle.
+    - When a Pokémon evolves.
+    - When a player hatches a Pokémon from an egg.
+    - When a Pokémon is killed in the world.
+    - When a player releases a Pokémon from their PC.
+    - When a Pokémon is resurrected using the fossil revival machine.
+    - When a player chooses a starter Pokémon (great for starter-based starter kits!).
+    - When a Pokémon ticks in the world (optimized to be cheap).
+    - When a Pokémon participates in a battle on the victors’ side.
+    - When a Pokémon levels up.
 - Adds a bunch of Cobblemon-relevant conditions:
-  - Match a Pokémon or any Pokémon on a team, leveraging the power of `PokemonMatcher`s from [Tim Core](https://www.notion.so/Tim-Core-22057e0d4afd809b9c02e78f26805376?pvs=21).
-  - Match the PokeBall a Pokémon’s caught with.
-  - Match a player’s Pokedex knowledge on a Pokémon.
-  - Match a player’s current [Counter](https://www.notion.so/Counter-21d57e0d4afd80d0815fc97b89368998?pvs=21) values.
+    - Match a Pokémon or any Pokémon on a team, leveraging the power of `PokemonMatcher`s from [Tim Core](https://www.notion.so/Tim-Core-22057e0d4afd809b9c02e78f26805376?pvs=21).
+    - Match the PokeBall a Pokémon’s caught with.
+    - Match a player’s Pokedex knowledge on a Pokémon.
+    - Match a player’s current [Counter](https://www.notion.so/Counter-21d57e0d4afd80d0815fc97b89368998?pvs=21) values.
 - Drop stuff where you want stuff to drop, per-dropper type, with an override per dropper.
-  - Drop it in the player’s inventory.
-  - Drop it in the player’s ender storage.
-  - Drop it next to the Pokémon entity.
-  - Give it to the Pokémon as a held item.
-  - Replace the Pokémon’s held item.
+    - Drop it in the player’s inventory.
+    - Drop it in the player’s ender storage.
+    - Drop it next to the Pokémon entity.
+    - Give it to the Pokémon as a held item.
+    - Replace the Pokémon’s held item.
 - Completely customizable with datapacks.
 - Easy to add new parts for droppers, event handlers, conditions, and drop targets in your own mod.
 - A new secondary layer between the event and the loot table makes the system much more malleable, replacing the old `/species/form` pattern.
@@ -95,7 +95,7 @@ Check out the demo pack below. It has the following basic examples:
 
 ## Known Issues
 
-- None. Why? Who’s asking? 👀
+- ≤v1.7.3-1.9.0 had an issue with trying to run the tick dropper too early and getting a null for its own ID. Yeah, doesn’t make sense to me either. ≥v1.7.3-1.9.1 fixes this by allowing for the ID to be null, and safely failing by not finding any droppers if that’s the case.
 
 ## Roadmap
 
