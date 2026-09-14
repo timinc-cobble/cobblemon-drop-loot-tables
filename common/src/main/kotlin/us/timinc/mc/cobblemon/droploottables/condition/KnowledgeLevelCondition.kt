@@ -2,7 +2,9 @@ package us.timinc.mc.cobblemon.droploottables.condition
 
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress
 import com.cobblemon.mod.common.util.pokedex
+import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.PrimitiveCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.storage.loot.LootContext
@@ -20,6 +22,15 @@ class KnowledgeLevelCondition(
     val knowledge: PokedexEntryProgress,
 ) : LootItemCondition {
     companion object {
+        // copypaste from 1.7
+        // @TODO: maybe refactor?
+        private val POKEDEX_ENTRY_PROGRESS_CODEC: Codec<PokedexEntryProgress> = RecordCodecBuilder.create { instance ->
+            instance.map(
+                PokedexEntryProgress::valueOf,
+                PrimitiveCodec.STRING.fieldOf("name").forGetter(PokedexEntryProgress::name)
+            )
+        }
+
         val CODEC: MapCodec<KnowledgeLevelCondition> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
                 DropLootTables.RESOURCE_LOCATION_CODEC.optionalFieldOf(
@@ -32,7 +43,8 @@ class KnowledgeLevelCondition(
                     FOCUS_PLAYER
                 )
                     .forGetter(KnowledgeLevelCondition::targetPlayer),
-                PokedexEntryProgress.CODEC.fieldOf("knowledge").forGetter(KnowledgeLevelCondition::knowledge),
+                POKEDEX_ENTRY_PROGRESS_CODEC.fieldOf("knowledge")
+                    .forGetter(KnowledgeLevelCondition::knowledge),
             ).apply(instance, ::KnowledgeLevelCondition)
         }
     }
@@ -45,7 +57,7 @@ class KnowledgeLevelCondition(
         val playerKnowledge =
             player.pokedex().getSpeciesRecord(pokemon.species.resourceIdentifier)
                 ?.getFormRecord(pokemon.form.name)?.knowledge
-                ?: PokedexEntryProgress.NONE
+                ?: PokedexEntryProgress.UNREGISTERED
         return playerKnowledge.ordinal >= knowledge.ordinal
     }
 }
