@@ -1,6 +1,5 @@
 package us.timinc.mc.cobblemon.droploottables.api.extension
 
-import com.cobblemon.mod.common.Cobblemon.LOGGER
 import com.cobblemon.mod.common.api.drop.ItemDropEntry
 import com.mojang.serialization.JsonOps
 import net.minecraft.core.component.DataComponentPatch
@@ -17,13 +16,12 @@ fun ItemDropEntry.buildItem(level: ServerLevel): ItemStack? {
             return null
         }
     val stack = ItemStack(item, quantityRange?.random() ?: quantity)
-
-    if (components != null) {
+    components?.let { components ->
         val registryOps = RegistryOps.create(JsonOps.INSTANCE, level.registryAccess())
         DataComponentPatch.CODEC.parse(registryOps, components)
             .ifSuccess { stack.applyComponentsAndValidate(it) }
-            .ifError {
-                LOGGER.error("Unable to parse components for drop item $item: ${it.message()}")
+            .ifError { error ->
+                DropLootTables.debugger.debug("Unable to parse components for drop item $item: ${error.message()}", true)
             }
     }
 

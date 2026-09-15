@@ -3,8 +3,8 @@ package us.timinc.mc.cobblemon.droploottables.condition
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress
 import com.cobblemon.mod.common.util.pokedex
 import com.mojang.serialization.Codec
+import com.mojang.serialization.DataResult
 import com.mojang.serialization.MapCodec
-import com.mojang.serialization.codecs.PrimitiveCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.storage.loot.LootContext
@@ -22,14 +22,17 @@ class KnowledgeLevelCondition(
     val knowledge: PokedexEntryProgress,
 ) : LootItemCondition {
     companion object {
-        // copypaste from 1.7
-        // @TODO: maybe refactor?
-        private val POKEDEX_ENTRY_PROGRESS_CODEC: Codec<PokedexEntryProgress> = RecordCodecBuilder.create { instance ->
-            instance.map(
-                PokedexEntryProgress::valueOf,
-                PrimitiveCodec.STRING.fieldOf("name").forGetter(PokedexEntryProgress::name)
-            )
-        }
+        private val KNOWLEDGE_CODEC: Codec<PokedexEntryProgress> = Codec.STRING.comapFlatMap(
+            { name ->
+                when (name.uppercase()) {
+                    "NONE", "UNREGISTERED" -> DataResult.success(PokedexEntryProgress.UNREGISTERED)
+                    "ENCOUNTERED", "SEEN" -> DataResult.success(PokedexEntryProgress.SEEN)
+                    "CAUGHT", "OWNED" -> DataResult.success(PokedexEntryProgress.OWNED)
+                    else -> DataResult.error { "Unknown Pokedex knowledge level: $name" }
+                }
+            },
+            PokedexEntryProgress::name,
+        ).fieldOf("name").codec()
 
         val CODEC: MapCodec<KnowledgeLevelCondition> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
@@ -43,8 +46,7 @@ class KnowledgeLevelCondition(
                     FOCUS_PLAYER
                 )
                     .forGetter(KnowledgeLevelCondition::targetPlayer),
-                POKEDEX_ENTRY_PROGRESS_CODEC.fieldOf("knowledge")
-                    .forGetter(KnowledgeLevelCondition::knowledge),
+                KNOWLEDGE_CODEC.fieldOf("knowledge").forGetter(KnowledgeLevelCondition::knowledge),
             ).apply(instance, ::KnowledgeLevelCondition)
         }
     }

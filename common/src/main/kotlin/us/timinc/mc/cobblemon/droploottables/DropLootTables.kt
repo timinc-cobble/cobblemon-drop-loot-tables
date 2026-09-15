@@ -8,7 +8,6 @@ import com.cobblemon.mod.common.pokeball.PokeBall
 import com.cobblemon.mod.common.pokemon.Pokemon
 import com.mojang.serialization.MapCodec
 import net.minecraft.core.Registry
-import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.storage.loot.parameters.LootContextParam
@@ -203,6 +202,8 @@ object DropLootTables : AbstractMod<DropLootTables.DropLootTablesConfig>(MOD_ID,
     }
 
     object LootItemConditionTypes {
+        val entries: MutableMap<ResourceLocation, LootItemConditionType> = linkedMapOf()
+
         val ABILITY_CONDITION =
             register(DataKeys.DropConditionKeys.ABILITY, AbilityCondition.CODEC)
         val ASPECTS_CONDITION =
@@ -265,7 +266,9 @@ object DropLootTables : AbstractMod<DropLootTables.DropLootTablesConfig>(MOD_ID,
             register(DataKeys.DropConditionKeys.TRADEABLE, TradeableCondition.CODEC)
 
         fun <T : LootItemCondition> register(id: ResourceLocation, codec: MapCodec<T>): LootItemConditionType {
-            return Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, id, LootItemConditionType(codec))
+            val conditionType = LootItemConditionType(codec)
+            entries[id] = conditionType
+            return conditionType
         }
     }
 
