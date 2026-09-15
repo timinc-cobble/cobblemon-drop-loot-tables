@@ -52,6 +52,9 @@ class KilledDropper(
 
     override fun getType(): DropperType<*, *> = DropLootTables.DropperTypes.KILLED
 
+    override fun canDrop(context: Context) =
+        context.focusPokemon.isWild() && super.canDrop(context)
+
     class Context(
         override val level: ServerLevel,
         val focusPokemon: Pokemon,

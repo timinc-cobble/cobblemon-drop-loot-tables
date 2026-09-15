@@ -47,4 +47,7 @@ object HatchedHandler : DropHandler<HatchedDropper.Context, HatchedDropper, Hatc
 
     override val selectedDropTargetTypes: List<ResourceLocation>
         get() = DropLootTables.config.hatchedDropTargets.map { it.asIdentifierDefaultingNamespace(MOD_ID) }
+
+    override fun processLegacyDrops(evt: HatchEggEvent.Post) =
+        getLegacyDrops(evt.pokemon.form, "hatch", getContext(evt).toLootParams(), getLevel(evt))
 }

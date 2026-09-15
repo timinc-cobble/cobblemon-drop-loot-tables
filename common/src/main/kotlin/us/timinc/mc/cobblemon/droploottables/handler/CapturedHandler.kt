@@ -45,4 +45,7 @@ object CapturedHandler : DropHandler<CapturedDropper.Context, CapturedDropper, P
     )
 
     override fun getLevel(evt: PokemonCapturedEvent): ServerLevel = evt.player.level() as ServerLevel
+
+    override fun processLegacyDrops(evt: PokemonCapturedEvent) =
+        getLegacyDrops(evt.pokemon.form, "capture", getContext(evt).toLootParams(), getLevel(evt))
 }

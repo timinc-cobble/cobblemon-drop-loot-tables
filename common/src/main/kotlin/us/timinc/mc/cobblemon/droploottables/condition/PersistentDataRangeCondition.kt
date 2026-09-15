@@ -10,31 +10,32 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType
 import us.timinc.mc.cobblemon.droploottables.DropLootTables
 import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKeys.FOCUS_POKEMON
 import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
+import us.timinc.mc.cobblemon.timcore.codec.FLOAT_RANGE_CODEC
 
 @Deprecated("Use the newly improved pokemon_matcher condition, it now accommodates this.")
-class MovesCondition(
+class PersistentDataRangeCondition(
     val targetPokemon: ResourceLocation = FOCUS_POKEMON,
-    val moves: List<String>,
-    val all: Boolean = false
+    val key: String,
+    val range: ClosedFloatingPointRange<Float>,
 ) : LootItemCondition {
     companion object {
-        val CODEC: MapCodec<MovesCondition> = RecordCodecBuilder.mapCodec { instance ->
+        val CODEC: MapCodec<PersistentDataRangeCondition> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
                 DropLootTables.RESOURCE_LOCATION_CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
-                    .forGetter(MovesCondition::targetPokemon),
-                Codec.STRING.listOf().fieldOf("moves")
-                    .forGetter(MovesCondition::moves),
-                Codec.BOOL.fieldOf("all").orElse(false)
-                    .forGetter(MovesCondition::all),
-            ).apply(instance, ::MovesCondition)
+                    .forGetter(PersistentDataRangeCondition::targetPokemon),
+                Codec.STRING.fieldOf("key").forGetter(PersistentDataRangeCondition::key),
+                FLOAT_RANGE_CODEC.fieldOf("range").forGetter(PersistentDataRangeCondition::range),
+            ).apply(instance, ::PersistentDataRangeCondition)
         }
     }
 
-    override fun getType(): LootItemConditionType = DropLootTables.LootItemConditionTypes.MOVES_CONDITION
+    override fun getType(): LootItemConditionType =
+        DropLootTables.LootItemConditionTypes.PERSISTENT_DATA_RANGE_CONDITION
 
     override fun test(ctx: LootContext): Boolean {
         val pokemon = PokemonParamExtractor.getFrom(ctx, targetPokemon) ?: return false
-        val pokemonMoveNames = pokemon.moveSet.map { it.name }
-        return if (all) moves.all(pokemonMoveNames::contains) else moves.any(pokemonMoveNames::contains)
+        val tagStringValue = pokemon.persistentData.get(key)?.asString ?: return false
+        val tagValue = tagStringValue.toFloatOrNull() ?: return false
+        return range.contains(tagValue)
     }
 }

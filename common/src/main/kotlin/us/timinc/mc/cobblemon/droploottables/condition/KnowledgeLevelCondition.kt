@@ -1,9 +1,9 @@
 package us.timinc.mc.cobblemon.droploottables.condition
 
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress
-import com.cobblemon.mod.common.util.asIdentifierDefaultingNamespace
 import com.cobblemon.mod.common.util.pokedex
 import com.mojang.serialization.Codec
+import com.mojang.serialization.DataResult
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceLocation
@@ -11,36 +11,43 @@ import net.minecraft.world.level.storage.loot.LootContext
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType
 import us.timinc.mc.cobblemon.droploottables.DropLootTables
-import us.timinc.mc.cobblemon.droploottables.MOD_ID
+import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKeys.FOCUS_PLAYER
+import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKeys.FOCUS_POKEMON
 import us.timinc.mc.cobblemon.droploottables.paramextractor.PlayerParamExtractor
 import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
 
 class KnowledgeLevelCondition(
-    val targetPokemon: ResourceLocation = DropLootTables.DataKeys.LootParamKeys.FOCUS_POKEMON,
-    val targetPlayer: ResourceLocation = DropLootTables.DataKeys.LootParamKeys.FOCUS_PLAYER,
+    val targetPokemon: ResourceLocation = FOCUS_POKEMON,
+    val targetPlayer: ResourceLocation = FOCUS_PLAYER,
     val knowledge: PokedexEntryProgress,
 ) : LootItemCondition {
     companion object {
+        private val KNOWLEDGE_CODEC: Codec<PokedexEntryProgress> = Codec.STRING.comapFlatMap(
+            { name ->
+                when (name.uppercase()) {
+                    "NONE", "UNREGISTERED" -> DataResult.success(PokedexEntryProgress.UNREGISTERED)
+                    "ENCOUNTERED", "SEEN" -> DataResult.success(PokedexEntryProgress.SEEN)
+                    "CAUGHT", "OWNED" -> DataResult.success(PokedexEntryProgress.OWNED)
+                    else -> DataResult.error { "Unknown Pokedex knowledge level: $name" }
+                }
+            },
+            PokedexEntryProgress::name,
+        ).fieldOf("name").codec()
+
         val CODEC: MapCodec<KnowledgeLevelCondition> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
-                Codec.STRING.optionalFieldOf(
+                DropLootTables.RESOURCE_LOCATION_CODEC.optionalFieldOf(
                     "target_pokemon",
-                    DropLootTables.DataKeys.LootParamKeys.FOCUS_POKEMON.toString()
+                    FOCUS_POKEMON
                 )
-                    .forGetter { it.targetPokemon.toString() },
-                Codec.STRING.optionalFieldOf(
+                    .forGetter(KnowledgeLevelCondition::targetPokemon),
+                DropLootTables.RESOURCE_LOCATION_CODEC.optionalFieldOf(
                     "target_player",
-                    DropLootTables.DataKeys.LootParamKeys.FOCUS_PLAYER.toString()
+                    FOCUS_PLAYER
                 )
-                    .forGetter { it.targetPlayer.toString() },
-                Codec.STRING.fieldOf("knowledge").forGetter { it.knowledge.name }
-            ).apply(instance) { pokemon, player, knowledge ->
-                KnowledgeLevelCondition(
-                    pokemon.asIdentifierDefaultingNamespace(MOD_ID),
-                    player.asIdentifierDefaultingNamespace(MOD_ID),
-                    PokedexEntryProgress.valueOf(knowledge.uppercase())
-                )
-            }
+                    .forGetter(KnowledgeLevelCondition::targetPlayer),
+                KNOWLEDGE_CODEC.fieldOf("knowledge").forGetter(KnowledgeLevelCondition::knowledge),
+            ).apply(instance, ::KnowledgeLevelCondition)
         }
     }
 
@@ -52,7 +59,7 @@ class KnowledgeLevelCondition(
         val playerKnowledge =
             player.pokedex().getSpeciesRecord(pokemon.species.resourceIdentifier)
                 ?.getFormRecord(pokemon.form.name)?.knowledge
-                ?: PokedexEntryProgress.NONE
+                ?: PokedexEntryProgress.UNREGISTERED
         return playerKnowledge.ordinal >= knowledge.ordinal
     }
 }

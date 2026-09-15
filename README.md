@@ -1,6 +1,6 @@
 # Drop Loot Tables
 
-v1.7.1-1.6
+v1.7.3-1.9
 
 [Modrinth](https://modrinth.com/mod/cobblemon-droploottables)
 
@@ -63,39 +63,39 @@ Check out the demo pack below. It has the following basic examples:
 - The Pidgey line will drop a feather or a random Pokémon feather every 20 ticks and emit a wing flapping sound.
 - A Shuckle participating in battle on the winning side while holding a berry will turn that berry into berry juice.
 
-[Demo Pack](https://www.notion.so/Demo-Pack-2f057e0d4afd811cb1ead90b07173f80?pvs=21)
+[Demo Pack](https://www.notion.so/Demo-Pack-34c57e0d4afd8149860bdee4fc837012?pvs=21)
 
 ## Player Help
 
-[How it works](https://www.notion.so/How-it-works-2f057e0d4afd81d9bfaee2b1892e756b?pvs=21)
+[How it works](https://www.notion.so/How-it-works-34c57e0d4afd812183d9f139ac3cd084?pvs=21)
 
-[Config Options](https://www.notion.so/Config-Options-2f057e0d4afd81f6991eff7d1578ca84?pvs=21)
+[Config Options](https://www.notion.so/Config-Options-34c57e0d4afd8129895fda9177bb1809?pvs=21)
 
 ## Addon Dev Help
 
 ### Data Pack Help
 
-[Making an Addon](https://www.notion.so/Making-an-Addon-2f057e0d4afd8100be80c24ee988249a?pvs=21)
+[Making an Addon](https://www.notion.so/Making-an-Addon-34c57e0d4afd8134ba3dcaf79236e928?pvs=21)
 
 ## Mod Dev Help
 
-[Make your own dropper type](https://www.notion.so/Make-your-own-dropper-type-2f057e0d4afd81308f5ce4fd38a08292?pvs=21)
+[Make your own dropper type](https://www.notion.so/Make-your-own-dropper-type-34c57e0d4afd8180aecdc8858680d0d6?pvs=21)
 
-[Make your own condition](https://www.notion.so/Make-your-own-condition-2f057e0d4afd8118b18bc15ad9753af5?pvs=21)
+[Make your own condition](https://www.notion.so/Make-your-own-condition-34c57e0d4afd81c5ac7bdd9e5bbc241a?pvs=21)
 
-[Register a new drop target](https://www.notion.so/Register-a-new-drop-target-2f057e0d4afd8189a055c2d47be62350?pvs=21)
+[Register a new drop target](https://www.notion.so/Register-a-new-drop-target-34c57e0d4afd81048791d7f746eaa6cd?pvs=21)
 
 ## Parts
 
-[Drop Target Types](https://www.notion.so/Drop-Target-Types-2f057e0d4afd81c7808afdae7d8c2da6?pvs=21)
+[Drop Target Types](https://www.notion.so/Drop-Target-Types-34c57e0d4afd81778401cebf556a76cf?pvs=21)
 
-[Dropper Type](https://www.notion.so/Dropper-Type-2f057e0d4afd8140a02cc1d9b8f9d587?pvs=21)
+[Dropper Type](https://www.notion.so/Dropper-Type-34c57e0d4afd819bad09cbe60f357488?pvs=21)
 
-[Drop Conditions](https://www.notion.so/Drop-Conditions-2f057e0d4afd81628edec3abf9168bef?pvs=21)
+[Drop Conditions](https://www.notion.so/Drop-Conditions-34c57e0d4afd818992a6e65dc2025b00?pvs=21)
 
 ## Known Issues
 
-- ≤v1.7.1-1.6.0 wouldn’t preserve base mod drops properly. v1.7.1-1.6.1 fixes this.
+- ≤v1.7.3-1.9.0 had an issue with trying to run the tick dropper too early and getting a null for its own ID. Yeah, doesn’t make sense to me either. ≥v1.7.3-1.9.1 fixes this by allowing for the ID to be null, and safely failing by not finding any droppers if that’s the case.
 
 ## Roadmap
 

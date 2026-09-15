@@ -12,29 +12,28 @@ import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKe
 import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
 
 @Deprecated("Use the newly improved pokemon_matcher condition, it now accommodates this.")
-class MovesCondition(
+class AspectsCondition(
     val targetPokemon: ResourceLocation = FOCUS_POKEMON,
-    val moves: List<String>,
-    val all: Boolean = false
+    val aspects: List<String>,
+    val all: Boolean = false,
 ) : LootItemCondition {
     companion object {
-        val CODEC: MapCodec<MovesCondition> = RecordCodecBuilder.mapCodec { instance ->
+        val CODEC: MapCodec<AspectsCondition> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
                 DropLootTables.RESOURCE_LOCATION_CODEC.optionalFieldOf("target_pokemon", FOCUS_POKEMON)
-                    .forGetter(MovesCondition::targetPokemon),
-                Codec.STRING.listOf().fieldOf("moves")
-                    .forGetter(MovesCondition::moves),
+                    .forGetter(AspectsCondition::targetPokemon),
+                Codec.STRING.listOf().fieldOf("aspects")
+                    .forGetter(AspectsCondition::aspects),
                 Codec.BOOL.fieldOf("all").orElse(false)
-                    .forGetter(MovesCondition::all),
-            ).apply(instance, ::MovesCondition)
+                    .forGetter(AspectsCondition::all),
+            ).apply(instance, ::AspectsCondition)
         }
     }
 
-    override fun getType(): LootItemConditionType = DropLootTables.LootItemConditionTypes.MOVES_CONDITION
+    override fun getType(): LootItemConditionType = DropLootTables.LootItemConditionTypes.ASPECTS_CONDITION
 
     override fun test(ctx: LootContext): Boolean {
         val pokemon = PokemonParamExtractor.getFrom(ctx, targetPokemon) ?: return false
-        val pokemonMoveNames = pokemon.moveSet.map { it.name }
-        return if (all) moves.all(pokemonMoveNames::contains) else moves.any(pokemonMoveNames::contains)
+        return if (all) aspects.all(pokemon.aspects::contains) else aspects.any(pokemon.aspects::contains)
     }
 }

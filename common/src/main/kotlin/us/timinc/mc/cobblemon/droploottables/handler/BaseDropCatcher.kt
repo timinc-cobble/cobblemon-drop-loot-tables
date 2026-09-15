@@ -2,9 +2,7 @@ package us.timinc.mc.cobblemon.droploottables.handler
 
 import com.cobblemon.mod.common.api.events.drops.LootDroppedEvent
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity
-import com.cobblemon.mod.common.util.party
 import us.timinc.mc.cobblemon.timcore.AbstractHandler
-import us.timinc.mc.cobblemon.timcore.getBooleanOrNull
 
 object BaseDropCatcher : AbstractHandler<LootDroppedEvent>() {
     override fun handle(evt: LootDroppedEvent) {

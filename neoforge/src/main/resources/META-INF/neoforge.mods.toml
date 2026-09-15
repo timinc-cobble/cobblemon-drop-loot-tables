@@ -1,5 +1,5 @@
 modLoader = "kotlinforforge"
-loaderVersion = "[4,)"
+loaderVersion = "[5.3,)"
 license = "MIT"
 issueTrackerURL="${modIssues}"
 
@@ -14,7 +14,7 @@ displayUrl="${modDiscord}"
 modUrl="${modSource}"
 
 [[mixins]]
-config = "mixins.droplootables.json"
+config = "mixins.droploottables.json"
 
 [[dependencies.${modId}]]
 modId = "minecraft"

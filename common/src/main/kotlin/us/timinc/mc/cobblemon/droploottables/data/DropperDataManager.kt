@@ -26,7 +26,7 @@ object DropperDataManager : AbstractReloadListener(Gson(), "drop/dropper") {
         }
     }
 
-    fun <C : DropContext, T : Dropper<C>> getValidDroppers(id: ResourceLocation, context: C): List<T>? =
+    fun <C : DropContext, T : Dropper<C>> getValidDroppers(id: ResourceLocation?, context: C): List<T>? =
         droppers[id]?.mapNotNull {
             @Suppress("UNCHECKED_CAST")
             it as? T
