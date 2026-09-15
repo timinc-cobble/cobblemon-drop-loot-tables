@@ -1,6 +1,6 @@
 # Drop Loot Tables
 
-v1.7.3-1.9
+v1.8.1-1.9
 
 [Modrinth](https://modrinth.com/mod/cobblemon-droploottables)
 
