@@ -24,6 +24,11 @@ dependencies {
     mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc:fabric-loader:${property("fabric_loader_version")}")
 
+    modRuntimeOnly("org.graalvm.js:js:${property("graalvm_version")}")
+    modRuntimeOnly("org.graalvm.sdk:graal-sdk:${property("graalvm_version")}")
+    modRuntimeOnly("org.graalvm.regex:regex:${property("graalvm_version")}")
+    modRuntimeOnly("org.graalvm.truffle:truffle-api:${property("graalvm_version")}")
+    modRuntimeOnly("com.ibm.icu:icu4j:${property("icu4j_version")}")
     modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:${property("fabric_api_version")}")
     modImplementation(fabricApi.module("fabric-command-api-v2", property("fabric_api_version").toString()))
 
