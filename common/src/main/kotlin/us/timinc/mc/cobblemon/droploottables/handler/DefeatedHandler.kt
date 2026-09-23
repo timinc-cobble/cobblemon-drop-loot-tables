@@ -84,6 +84,6 @@ object DefeatedHandler : DropHandler<DefeatedDropper.Context, DefeatedDropper, S
         getLegacyDrops(evt.winner.form, "ko", getContext(evt).toLootParams(), getLevel(evt)!!)
 
     override fun cleanup(evt: SingleDefeatEvent, drops: MutableList<ItemStack>) {
-        baseDrops.remove(evt.winner.uuid)
+        baseDrops.remove(evt.loser.uuid)
     }
 }
