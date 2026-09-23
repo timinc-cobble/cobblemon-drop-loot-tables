@@ -21,6 +21,7 @@ dependencies {
 
     annotationProcessor("net.fabricmc:sponge-mixin:0.15.4+mixin.0.8.7")
     compileOnly("net.fabricmc:sponge-mixin:0.15.4+mixin.0.8.7")
+    compileOnly("io.github.llamalad7:mixinextras-common:${property("mixin_extras_version")}")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junit_version")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junit_version")}")

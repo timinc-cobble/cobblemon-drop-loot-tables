@@ -22,7 +22,6 @@ import java.util.UUID
 
 object EvolvedHandler : DropHandler<EvolvedDropper.Context, EvolvedDropper, EvolutionCompleteEvent> {
     val baseDrops: MutableMap<UUID, MutableList<DropEntry>> = mutableMapOf()
-    val whoEvolvingWho: MutableMap<UUID, UUID> = mutableMapOf()
 
     override val dropperTypeId: ResourceLocation = DropLootTables.DataKeys.DropperTypes.EVOLVED
 
@@ -89,7 +88,6 @@ object EvolvedHandler : DropHandler<EvolvedDropper.Context, EvolvedDropper, Evol
         getLegacyDrops(evt.pokemon.form, "evolve", getContext(evt).toLootParams(), getLevel(evt)!!)
 
     override fun cleanup(evt: EvolutionCompleteEvent, drops: MutableList<ItemStack>) {
-        evt.pokemon.getOwnerUUID()?.let(whoEvolvingWho::remove)
         baseDrops.remove(evt.pokemon.uuid)
     }
 }
