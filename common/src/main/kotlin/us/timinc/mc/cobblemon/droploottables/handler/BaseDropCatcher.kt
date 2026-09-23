@@ -22,6 +22,7 @@ object BaseDropCatcher : AbstractHandler<LootDroppedEvent>() {
         evt.player?.let { player ->
             EvolvedHandler.whoEvolvingWho.remove(player.uuid)?.let { evolvingPokemonUuid ->
                 EvolvedHandler.baseDrops[evolvingPokemonUuid] = evt.drops
+                evt.cancel()
             }
         }
     }
