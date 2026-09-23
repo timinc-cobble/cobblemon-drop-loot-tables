@@ -63,7 +63,7 @@ object KilledHandler : DropHandler<KilledDropper.Context, KilledDropper, Pokemon
     override fun processOtherDrops(evt: PokemonFaintedEvent): List<ItemStack> {
         val ctx = getContext(evt)
         val droppers = getDroppers(ctx) ?: emptyList()
-        if (!droppers.isEmpty() && !droppers.any(KilledDropper::preserveBaseDrops)) return emptyList()
+        if (droppers.isNotEmpty() && !droppers.any(KilledDropper::preserveBaseDrops)) return emptyList()
 
         val caughtBaseDrops = baseDrops[evt.pokemon.uuid] ?: emptyList()
 

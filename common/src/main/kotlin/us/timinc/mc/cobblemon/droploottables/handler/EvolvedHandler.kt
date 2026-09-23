@@ -70,7 +70,7 @@ object EvolvedHandler : DropHandler<EvolvedDropper.Context, EvolvedDropper, Evol
     override fun processOtherDrops(evt: EvolutionCompleteEvent): List<ItemStack> {
         val ctx = getContext(evt)
         val droppers = getDroppers(ctx) ?: emptyList()
-        if (!droppers.isEmpty() && !droppers.any(EvolvedDropper::preserveBaseDrops)) return emptyList()
+        if (droppers.isNotEmpty() && !droppers.any(EvolvedDropper::preserveBaseDrops)) return emptyList()
 
         val caughtBaseDrops = evt.pokemon.uuid.let(baseDrops::get) ?: emptyList()
 
