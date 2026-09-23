@@ -69,8 +69,9 @@ object KilledHandler : DropHandler<KilledDropper.Context, KilledDropper, Pokemon
 
         return caughtBaseDrops.mapNotNull { baseDrop ->
             if (baseDrop !is ItemDropEntry) {
-                val pos = evt.pokemon.entity?.position() ?: return@mapNotNull null
-                baseDrop.drop(evt.pokemon.entity, ctx.level, pos, ctx.focusPlayer)
+                val entity = evt.pokemon.entity
+                val pos = entity?.position() ?: return@mapNotNull null
+                baseDrop.drop(entity, ctx.level, pos, ctx.focusPlayer)
                 return@mapNotNull null
             }
 
