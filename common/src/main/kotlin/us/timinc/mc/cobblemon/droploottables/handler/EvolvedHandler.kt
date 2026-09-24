@@ -87,7 +87,7 @@ object EvolvedHandler : DropHandler<EvolvedDropper.Context, EvolvedDropper, Evol
     override fun processLegacyDrops(evt: EvolutionCompleteEvent) =
         getLegacyDrops(evt.pokemon.form, "evolve", getContext(evt).toLootParams(), getLevel(evt)!!)
 
-    override fun cleanup(evt: EvolutionCompleteEvent, drops: MutableList<ItemStack>) {
+    override fun cleanup(evt: EvolutionCompleteEvent, drops: MutableList<ItemStack>, droppers: List<EvolvedDropper>) {
         baseDrops.remove(evt.pokemon.uuid)
     }
 }

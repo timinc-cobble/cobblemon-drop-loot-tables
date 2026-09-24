@@ -23,8 +23,8 @@ interface DropHandler<C : DropContext, D : Dropper<C>, E> {
         if (!isRelevantEvent(evt)) return
         val dropTargets = getDropTarget(evt) ?: return
         val ctx = getContext(evt)
-        val droppers = getDroppers(ctx)
-        val drops: MutableList<ItemStack> = droppers?.flatMap { dropper ->
+        val droppers = getDroppers(ctx) ?: emptyList()
+        val drops: MutableList<ItemStack> = droppers.flatMap { dropper ->
             val toDrop = dropper.lootTables.flatMap { tableId ->
                 dropFromTable(
                     tableId,
@@ -42,7 +42,7 @@ interface DropHandler<C : DropContext, D : Dropper<C>, E> {
             }
 
             toDrop
-        }?.toMutableList() ?: mutableListOf()
+        }.toMutableList()
         drops.addAll(processOtherDrops(evt))
         if (DropLootTables.config.legacyMode)
             drops.addAll(processLegacyDrops(evt))
@@ -56,7 +56,7 @@ interface DropHandler<C : DropContext, D : Dropper<C>, E> {
             }
         }
 
-        cleanup(evt, drops)
+        cleanup(evt, drops, droppers)
     }
 
     val dropTargetTypes: MutableMap<ResourceLocation, (evt: E) -> DropTarget?>
@@ -117,5 +117,5 @@ interface DropHandler<C : DropContext, D : Dropper<C>, E> {
             }"
         )
 
-    fun cleanup(evt: E, drops: MutableList<ItemStack>) {}
+    fun cleanup(evt: E, drops: MutableList<ItemStack>, droppers: List<D>) {}
 }
