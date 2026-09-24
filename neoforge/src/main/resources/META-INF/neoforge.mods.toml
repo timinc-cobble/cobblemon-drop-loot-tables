@@ -18,28 +18,31 @@ config = "mixins.droploottables.json"
 
 [[dependencies.${modId}]]
 modId = "minecraft"
-mandatory = true
 versionRange = "[${minecraft_version}]"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${modId}]]
 modId = "neoforge"
-mandatory = true
 versionRange = "[${neoforge_version},)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${modId}]]
 modId = "cobblemon"
-mandatory = true
 versionRange = "[${cobblemon_version}]"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${modId}]]
 modId = "tim_core"
-mandatory = true
 versionRange = "[${tim_core_neoforge_version},)"
 ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${modId}]]
+modId = "cobbled_counter"
+type = "optional"
+versionRange = "[${counter_neoforge_version},)"
+ordering = "AFTER"
 side = "BOTH"

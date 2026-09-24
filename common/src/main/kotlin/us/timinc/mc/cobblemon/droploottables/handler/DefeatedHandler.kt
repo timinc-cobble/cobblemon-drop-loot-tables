@@ -65,7 +65,7 @@ object DefeatedHandler : DropHandler<DefeatedDropper.Context, DefeatedDropper, S
     override fun processOtherDrops(evt: SingleDefeatEvent): List<ItemStack> {
         val ctx = getContext(evt)
         val droppers = getDroppers(ctx) ?: emptyList()
-        if (!droppers.isEmpty() && !droppers.any(DefeatedDropper::preserveBaseDrops)) return emptyList()
+        if (droppers.isNotEmpty() && !droppers.any(DefeatedDropper::preserveBaseDrops)) return emptyList()
 
         val caughtBaseDrops = baseDrops[evt.loser.uuid] ?: emptyList()
 
@@ -83,7 +83,7 @@ object DefeatedHandler : DropHandler<DefeatedDropper.Context, DefeatedDropper, S
     override fun processLegacyDrops(evt: SingleDefeatEvent) =
         getLegacyDrops(evt.winner.form, "ko", getContext(evt).toLootParams(), getLevel(evt)!!)
 
-    override fun cleanup(evt: SingleDefeatEvent, drops: MutableList<ItemStack>) {
-        baseDrops.remove(evt.winner.uuid)
+    override fun cleanup(evt: SingleDefeatEvent, drops: MutableList<ItemStack>, droppers: List<DefeatedDropper>) {
+        baseDrops.remove(evt.loser.uuid)
     }
 }

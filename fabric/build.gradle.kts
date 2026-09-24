@@ -31,12 +31,7 @@ dependencies {
     modRuntimeOnly("org.graalvm.truffle:truffle-api:${property("graalvm_version")}")
     modRuntimeOnly("com.ibm.icu:icu4j:${property("icu4j_version")}")
     modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:${property("fabric_api_version")}")
-    modRuntimeOnly("org.graalvm.sdk:graal-sdk:22.3.0")
-    modRuntimeOnly("org.graalvm.truffle:truffle-api:22.3.0")
-    modRuntimeOnly("org.graalvm.js:js:22.3.0")
-    modRuntimeOnly("org.graalvm.regex:regex:22.3.0")
-    modRuntimeOnly("com.ibm.icu:icu4j:71.1")
-    minecraftServerLibraries("com.ibm.icu:icu4j:71.1")
+    minecraftServerLibraries("com.ibm.icu:icu4j:${property("icu4j_version")}")
     modImplementation(fabricApi.module("fabric-command-api-v2", property("fabric_api_version").toString()))
 
     //needed for cobblemon

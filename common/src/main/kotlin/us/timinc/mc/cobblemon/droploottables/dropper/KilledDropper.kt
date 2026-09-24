@@ -7,8 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.world.entity.LivingEntity
-import net.minecraft.world.entity.TamableAnimal
+import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.level.storage.loot.LootParams
 import net.minecraft.world.level.storage.loot.parameters.LootContextParam
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams
@@ -58,7 +57,8 @@ class KilledDropper(
     class Context(
         override val level: ServerLevel,
         val focusPokemon: Pokemon,
-        val focusKiller: LivingEntity?,
+        val damageSource: DamageSource?,
+        val focusPlayer: ServerPlayer?,
     ) : DropContext {
         override fun toLootParams(): LootParams {
             val params = mutableMapOf<LootContextParam<*>, Any>(
@@ -67,21 +67,21 @@ class KilledDropper(
             focusPokemon.entity?.let { entity ->
                 params[LootContextParams.ORIGIN] = entity.position()
                 params[LootContextParams.THIS_ENTITY] = entity
-                entity.lastAttacker?.let { params[LootContextParams.ATTACKING_ENTITY] = it }
-                entity.lastDamageSource?.entity?.let { params[LootContextParams.DIRECT_ATTACKING_ENTITY] = it }
+                damageSource?.let { source ->
+                    params[LootContextParams.DAMAGE_SOURCE] = source
+                    source.entity?.let { params[LootContextParams.ATTACKING_ENTITY] = it }
+                    source.directEntity?.let { params[LootContextParams.DIRECT_ATTACKING_ENTITY] = it }
+                }
             }
-            (focusKiller as? ServerPlayer)?.let {
-                params[DropLootTables.LootParams.FOCUS_PLAYER] = it
+            focusPlayer?.let { player ->
+                params[DropLootTables.LootParams.FOCUS_PLAYER] = player
+                params[LootContextParams.LAST_DAMAGE_PLAYER] = player
             }
-            val attackingPlayerOrPet =
-                focusKiller as? ServerPlayer ?: focusKiller as? TamableAnimal
-            attackingPlayerOrPet?.let { params[LootContextParams.LAST_DAMAGE_PLAYER] = it }
             return LootParams(
                 level,
                 params,
                 mapOf(),
-                (attackingPlayerOrPet as? ServerPlayer
-                    ?: ((attackingPlayerOrPet as? TamableAnimal)?.owner) as? ServerPlayer)?.luck ?: 0F
+                focusPlayer?.luck ?: 0F
             )
         }
     }

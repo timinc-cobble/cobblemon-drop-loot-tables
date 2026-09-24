@@ -311,10 +311,6 @@ object DropLootTables : AbstractMod<DropLootTables.DropLootTablesConfig>(MOD_ID,
 
         Events.SINGLE_DEFEAT.subscribe(Priority.LOWEST, DefeatedHandler::handle)
         Events.SINGLE_VICTORY.subscribe(Priority.LOWEST, VictoryHandler::handle)
-        CobblemonEvents.EVOLUTION_ACCEPTED.subscribe {
-            if (it.pokemon.entity != null) return@subscribe
-            it.pokemon.getOwnerPlayer()?.let { player -> EvolvedHandler.whoEvolvingWho[player.uuid] = it.pokemon.uuid }
-        }
         CobblemonEvents.EVOLUTION_COMPLETE.subscribe(Priority.LOWEST, EvolvedHandler::handle)
         CobblemonEvents.FOSSIL_REVIVED.subscribe(Priority.LOWEST, ResurrectedHandler::handle)
         CobblemonEvents.HATCH_EGG_POST.subscribe(Priority.LOWEST, HatchedHandler::handle)

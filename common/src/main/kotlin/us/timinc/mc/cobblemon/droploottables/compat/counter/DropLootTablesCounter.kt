@@ -20,6 +20,7 @@ object DropLootTablesCounter {
     }
 
     init {
+        DropLootTables.debugger.debug("Loading Counter compat", true)
         LootItemConditionTypes
     }
 }

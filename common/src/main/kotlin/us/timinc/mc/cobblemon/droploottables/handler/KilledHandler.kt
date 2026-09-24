@@ -7,14 +7,14 @@ import com.cobblemon.mod.common.api.scheduling.afterOnServer
 import com.cobblemon.mod.common.util.asIdentifierDefaultingNamespace
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
-import net.minecraft.server.level.ServerPlayer
-import net.minecraft.world.entity.TamableAnimal
 import net.minecraft.world.item.ItemStack
 import us.timinc.mc.cobblemon.droploottables.DropLootTables
 import us.timinc.mc.cobblemon.droploottables.MOD_ID
 import us.timinc.mc.cobblemon.droploottables.api.DropHandler
 import us.timinc.mc.cobblemon.droploottables.api.DropTarget
 import us.timinc.mc.cobblemon.droploottables.api.extension.buildItem
+import us.timinc.mc.cobblemon.droploottables.api.extension.getDamageSource
+import us.timinc.mc.cobblemon.droploottables.api.extension.getPlayerKillCredit
 import us.timinc.mc.cobblemon.droploottables.dropper.KilledDropper
 import us.timinc.mc.cobblemon.droploottables.droptarget.PlayerDropTarget
 import us.timinc.mc.cobblemon.droploottables.droptarget.PlayerEnderChestDropTarget
@@ -30,8 +30,8 @@ object KilledHandler : DropHandler<KilledDropper.Context, KilledDropper, Pokemon
         KilledDropper.Context(
             getLevel(evt)!!,
             evt.pokemon,
-            (evt.pokemon.entity!!.lastAttacker as? ServerPlayer)
-                ?: (evt.pokemon.entity!!.lastAttacker as? TamableAnimal).takeIf { it?.isTame ?: false }
+            evt.getDamageSource(),
+            evt.getPlayerKillCredit(),
         )
 
     override fun getLevel(evt: PokemonFaintedEvent): ServerLevel? =
@@ -40,10 +40,10 @@ object KilledHandler : DropHandler<KilledDropper.Context, KilledDropper, Pokemon
     override val dropTargetTypes: MutableMap<ResourceLocation, (evt: PokemonFaintedEvent) -> DropTarget?> =
         mutableMapOf(
             DropLootTables.DataKeys.DropTargetTypes.PLAYER_ENDER_STORAGE to { evt ->
-                evt.pokemon.getOwnerPlayer()?.let(::PlayerEnderChestDropTarget)
+                evt.getPlayerKillCredit()?.let(::PlayerEnderChestDropTarget)
             },
             DropLootTables.DataKeys.DropTargetTypes.PLAYER_INVENTORY to { evt ->
-                evt.pokemon.getOwnerPlayer()?.let(::PlayerDropTarget)
+                evt.getPlayerKillCredit()?.let(::PlayerDropTarget)
             },
             DropLootTables.DataKeys.DropTargetTypes.POKEMON_WORLD_POSITION to { evt ->
                 evt.pokemon.entity?.let(::PokemonEntityDropTarget)
@@ -63,14 +63,15 @@ object KilledHandler : DropHandler<KilledDropper.Context, KilledDropper, Pokemon
     override fun processOtherDrops(evt: PokemonFaintedEvent): List<ItemStack> {
         val ctx = getContext(evt)
         val droppers = getDroppers(ctx) ?: emptyList()
-        if (!droppers.isEmpty() && !droppers.any(KilledDropper::preserveBaseDrops)) return emptyList()
+        if (droppers.isNotEmpty() && !droppers.any(KilledDropper::preserveBaseDrops)) return emptyList()
 
         val caughtBaseDrops = baseDrops[evt.pokemon.uuid] ?: emptyList()
 
         return caughtBaseDrops.mapNotNull { baseDrop ->
             if (baseDrop !is ItemDropEntry) {
-                val pos = evt.pokemon.entity?.position() ?: return@mapNotNull null
-                baseDrop.drop(evt.pokemon.entity, ctx.level, pos, evt.pokemon.getOwnerPlayer())
+                val entity = evt.pokemon.entity
+                val pos = entity?.position() ?: return@mapNotNull null
+                baseDrop.drop(entity, ctx.level, pos, ctx.focusPlayer)
                 return@mapNotNull null
             }
 
@@ -85,7 +86,7 @@ object KilledHandler : DropHandler<KilledDropper.Context, KilledDropper, Pokemon
             emptyList()
     }
 
-    override fun cleanup(evt: PokemonFaintedEvent, drops: MutableList<ItemStack>) {
+    override fun cleanup(evt: PokemonFaintedEvent, drops: MutableList<ItemStack>, droppers: List<KilledDropper>) {
         baseDrops.remove(evt.pokemon.uuid)
     }
 
