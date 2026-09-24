@@ -24,6 +24,9 @@
     "cobblemon": "${cobblemon_version}",
     "tim_core": ">=${tim_core_fabric_version}"
   },
+  "suggests": {
+    "cobbled_counter": ">=${counter_fabric_version}"
+  },
   "contact": {
     "homepage": "${modDiscord}",
     "issues": "${modIssues}",
