@@ -95,9 +95,11 @@ object TickedHandler : DropHandler<TickedDropper.Context, TickedDropper, Pokemon
         return false
     }
 
-    override fun cleanup(evt: PokemonEntityTickedEvent, drops: MutableList<ItemStack>) {
-        val context = getContext(evt)
-        val droppers = getDroppers(context) ?: return
+    override fun cleanup(
+        evt: PokemonEntityTickedEvent,
+        drops: MutableList<ItemStack>,
+        droppers: List<TickedDropper>,
+    ) {
         val sounds = droppers.mapNotNull { it.sound }
         sounds.forEach { it.emit(evt.entity.level() as ServerLevel, evt.entity.position()) }
     }
