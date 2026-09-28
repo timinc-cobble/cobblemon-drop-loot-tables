@@ -13,6 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Desc;
 import us.timinc.mc.cobblemon.droploottables.handler.BaseDropCause;
 import us.timinc.mc.cobblemon.droploottables.handler.BaseDropCauseScope;
 
@@ -20,9 +21,20 @@ import us.timinc.mc.cobblemon.droploottables.handler.BaseDropCauseScope;
 public abstract class PokemonDeathBaseDropCause {
     @WrapOperation(
         method = "doDeathDrops",
+        remap = false,
         at = @At(
             value = "INVOKE",
-            target = "Lcom/cobblemon/mod/common/api/drop/DropTable;postLootDroppedEvent(Ljava/util/List;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/server/level/ServerPlayer;)V"
+            desc = @Desc(
+                owner = DropTable.class,
+                value = "postLootDroppedEvent",
+                args = {
+                    List.class,
+                    LivingEntity.class,
+                    ServerLevel.class,
+                    Vec3.class,
+                    ServerPlayer.class
+                }
+            )
         ),
         require = 1
     )
