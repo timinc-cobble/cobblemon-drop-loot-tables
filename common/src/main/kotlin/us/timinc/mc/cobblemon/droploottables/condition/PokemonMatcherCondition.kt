@@ -1,5 +1,6 @@
 package us.timinc.mc.cobblemon.droploottables.condition
 
+import com.cobblemon.mod.common.pokemon.Pokemon
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceLocation
@@ -8,7 +9,6 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType
 import us.timinc.mc.cobblemon.droploottables.DropLootTables
 import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKeys.FOCUS_POKEMON
-import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
 import us.timinc.mc.cobblemon.timcore.LimitedList
 import us.timinc.mc.cobblemon.timcore.PokemonMatcher
 
@@ -42,7 +42,8 @@ class PokemonMatcherCondition(
     override fun getType(): LootItemConditionType = DropLootTables.LootItemConditionTypes.POKEMON_MATCHER_CONDITION
 
     override fun test(ctx: LootContext): Boolean {
-        val pokemon = PokemonParamExtractor.getFrom(ctx, targetPokemon) ?: return false
+        val pokemonParam = DropLootTables.LootParams.params[targetPokemon] ?: return false
+        val pokemon = ctx.getParamOrNull(pokemonParam) as? Pokemon ?: return false
         return LimitedList.PokemonMatcherList.matchesList(pokemon, matcher, antiMatcher)
     }
 }

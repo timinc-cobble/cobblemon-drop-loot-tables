@@ -1,5 +1,6 @@
 package us.timinc.mc.cobblemon.droploottables.dropper
 
+import com.cobblemon.mod.common.util.party
 import com.cobblemon.mod.common.pokemon.Pokemon
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
@@ -75,6 +76,7 @@ class KilledDropper(
             }
             focusPlayer?.let { player ->
                 params[DropLootTables.LootParams.FOCUS_PLAYER] = player
+                params[DropLootTables.LootParams.FOCUS_TEAM] = player.party().toList()
                 params[LootContextParams.LAST_DAMAGE_PLAYER] = player
             }
             return LootParams(

@@ -78,7 +78,20 @@ class DefeatedDropper(
                 DropLootTables.LootParams.FOCUS_POKEMON to focusPokemon,
                 DropLootTables.LootParams.DEFEATING_POKEMON to defeatingPokemon,
             )
+            val focusSide = battle.actors.firstOrNull { actor ->
+                actor.pokemonList.any { it.effectedPokemon.uuid == focusPokemon.uuid }
+            }?.getSide()
+            focusSide?.actors?.flatMap(BattleActor::pokemonList)?.map(BattlePokemon::effectedPokemon)?.let {
+                params[DropLootTables.LootParams.FOCUS_TEAM] = it
+            }
+            focusSide?.getOppositeSide()?.actors?.flatMap(BattleActor::pokemonList)
+                ?.map(BattlePokemon::effectedPokemon)?.let {
+                    params[DropLootTables.LootParams.DEFEATING_TEAM] = it
+                }
             focusPokemon.entity?.let { params[LootContextParams.THIS_ENTITY] = it }
+            focusPokemon.getOwnerPlayer()?.let { player ->
+                params[DropLootTables.LootParams.FOCUS_PLAYER] = player
+            }
             pos?.let { params[LootContextParams.ORIGIN] = it }
 
             return LootParams(

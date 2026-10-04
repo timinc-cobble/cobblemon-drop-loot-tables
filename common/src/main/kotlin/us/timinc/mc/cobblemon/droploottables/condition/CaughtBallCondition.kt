@@ -8,7 +8,6 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType
 import us.timinc.mc.cobblemon.droploottables.COBBLEMON_RESOURCE_LOCATION_CODEC
 import us.timinc.mc.cobblemon.droploottables.DropLootTables
-import us.timinc.mc.cobblemon.droploottables.paramextractor.PokeBallParamExtractor
 
 class CaughtBallCondition(
     val balls: List<ResourceLocation>,
@@ -24,7 +23,7 @@ class CaughtBallCondition(
     override fun getType(): LootItemConditionType = DropLootTables.LootItemConditionTypes.CAUGHT_BALL_CONDITION
 
     override fun test(ctx: LootContext): Boolean {
-        val pokeBall = PokeBallParamExtractor.getFrom(ctx, DropLootTables.LootParams.FOCUS_POKEBALL) ?: return false
+        val pokeBall = ctx.getParamOrNull(DropLootTables.LootParams.FOCUS_POKEBALL) ?: return false
         return balls.contains(pokeBall.name)
     }
 }

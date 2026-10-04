@@ -1,5 +1,6 @@
 package us.timinc.mc.cobblemon.droploottables.condition
 
+import com.cobblemon.mod.common.pokemon.Pokemon
 import com.cobblemon.mod.common.api.pokemon.stats.Stats
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
@@ -10,7 +11,6 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType
 import us.timinc.mc.cobblemon.droploottables.DropLootTables
 import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKeys.FOCUS_POKEMON
-import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
 import us.timinc.mc.cobblemon.timcore.codec.INT_RANGE_CODEC
 
 @Deprecated("Use the newly improved pokemon_matcher condition, it now accommodates this.")
@@ -35,7 +35,8 @@ class EvCondition(
     override fun getType(): LootItemConditionType = DropLootTables.LootItemConditionTypes.EV_CONDITION
 
     override fun test(ctx: LootContext): Boolean {
-        val pokemon = PokemonParamExtractor.getFrom(ctx, targetPokemon) ?: return false
+        val pokemonParam = DropLootTables.LootParams.params[targetPokemon] ?: return false
+        val pokemon = ctx.getParamOrNull(pokemonParam) as? Pokemon ?: return false
         val pokemonEv = pokemon.evs[Stats.getStat(stat)]
         return range.contains(pokemonEv)
     }

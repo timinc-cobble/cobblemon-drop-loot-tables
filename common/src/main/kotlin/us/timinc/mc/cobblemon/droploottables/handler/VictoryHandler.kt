@@ -28,7 +28,7 @@ object VictoryHandler : DropHandler<VictoryDropper.Context, VictoryDropper, Sing
                 evt.winner.getOwnerPlayer()?.let(::PlayerDropTarget)
             },
             DropLootTables.DataKeys.DropTargetTypes.POKEMON_WORLD_POSITION to { evt ->
-                evt.loser.entity?.let(::PokemonEntityDropTarget)
+                evt.winner.entity?.let(::PokemonEntityDropTarget)
             },
             DropLootTables.DataKeys.DropTargetTypes.POKEMON_HELD_ITEM to { evt ->
                 PokemonHeldItemDropTarget(evt.winner)

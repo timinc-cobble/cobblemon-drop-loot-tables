@@ -2,6 +2,7 @@ package us.timinc.mc.cobblemon.droploottables.dropper
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity
 import com.cobblemon.mod.common.pokemon.Pokemon
+import com.cobblemon.mod.common.util.party
 import com.cobblemon.mod.common.util.playSoundServer
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
@@ -11,6 +12,7 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.level.storage.loot.LootParams
+import net.minecraft.world.level.storage.loot.parameters.LootContextParam
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition
 import net.minecraft.world.phys.Vec3
@@ -78,16 +80,18 @@ class TickedDropper(
             )
         }
 
-        override fun toLootParams(): LootParams = LootParams(
-            level,
-            mapOf(
+        override fun toLootParams(): LootParams {
+            val params = mutableMapOf<LootContextParam<*>, Any>(
                 LootContextParams.ORIGIN to pokemonEntity.position(),
                 LootContextParams.THIS_ENTITY to pokemonEntity,
                 DropLootTables.LootParams.FOCUS_POKEMON to focusPokemon
-            ),
-            mapOf(),
-            0F
-        )
+            )
+            focusPokemon.getOwnerPlayer()?.let { player ->
+                params[DropLootTables.LootParams.FOCUS_PLAYER] = player
+                params[DropLootTables.LootParams.FOCUS_TEAM] = player.party().toList()
+            }
+            return LootParams(level, params, mapOf(), 0F)
+        }
     }
 
     data class SoundDescription(

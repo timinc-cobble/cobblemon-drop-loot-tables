@@ -1,5 +1,6 @@
 package us.timinc.mc.cobblemon.droploottables.dropper
 
+import com.cobblemon.mod.common.util.party
 import com.cobblemon.mod.common.pokemon.Pokemon
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
@@ -58,6 +59,7 @@ class ResurrectedDropper(
             origin?.let { params[LootContextParams.ORIGIN] = it }
             focusPlayer?.let {
                 params[DropLootTables.LootParams.FOCUS_PLAYER] = it
+                params[DropLootTables.LootParams.FOCUS_TEAM] = it.party().toList()
             }
             return LootParams(level, params, mapOf(), focusPlayer?.luck ?: 0F)
         }

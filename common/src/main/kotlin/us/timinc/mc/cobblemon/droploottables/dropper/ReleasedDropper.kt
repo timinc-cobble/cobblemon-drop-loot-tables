@@ -1,5 +1,6 @@
 package us.timinc.mc.cobblemon.droploottables.dropper
 
+import com.cobblemon.mod.common.util.party
 import com.cobblemon.mod.common.pokemon.Pokemon
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
@@ -56,6 +57,7 @@ class ReleasedDropper(
                     LootContextParams.ORIGIN to focusPlayer.position(),
                     DropLootTables.LootParams.FOCUS_POKEMON to focusPokemon,
                     DropLootTables.LootParams.FOCUS_PLAYER to focusPlayer,
+                    DropLootTables.LootParams.FOCUS_TEAM to focusPlayer.party().toList(),
                 ),
                 mapOf(),
                 focusPlayer.luck

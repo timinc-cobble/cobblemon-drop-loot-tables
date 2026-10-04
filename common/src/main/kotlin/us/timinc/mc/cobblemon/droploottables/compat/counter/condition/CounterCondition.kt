@@ -1,9 +1,11 @@
 package us.timinc.mc.cobblemon.droploottables.compat.counter.condition
 
+import com.cobblemon.mod.common.pokemon.Pokemon
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.storage.loot.LootContext
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType
@@ -12,8 +14,6 @@ import us.timinc.mc.cobblemon.counter.api.CounterTypeRegistry
 import us.timinc.mc.cobblemon.counter.extension.getCounterManager
 import us.timinc.mc.cobblemon.droploottables.DropLootTables
 import us.timinc.mc.cobblemon.droploottables.compat.counter.DropLootTablesCounter
-import us.timinc.mc.cobblemon.droploottables.paramextractor.PlayerParamExtractor
-import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
 
 class CounterCondition(
     val targetPlayer: ResourceLocation = DropLootTables.DataKeys.LootParamKeys.FOCUS_PLAYER,
@@ -70,8 +70,10 @@ class CounterCondition(
     }
 
     override fun test(context: LootContext): Boolean {
-        val player = PlayerParamExtractor.getFrom(context, targetPlayer) ?: return false
-        val pokemonData = PokemonParamExtractor.getFrom(context, targetPokemon) ?: return false
+        val playerParam = DropLootTables.LootParams.params[targetPlayer] ?: return false
+        val player = context.getParamOrNull(playerParam) as? ServerPlayer ?: return false
+        val pokemonParam = DropLootTables.LootParams.params[targetPokemon] ?: return false
+        val pokemonData = context.getParamOrNull(pokemonParam) as? Pokemon ?: return false
 
         val speciesId = pokemonData.species.resourceIdentifier
         val formName = pokemonData.form.name

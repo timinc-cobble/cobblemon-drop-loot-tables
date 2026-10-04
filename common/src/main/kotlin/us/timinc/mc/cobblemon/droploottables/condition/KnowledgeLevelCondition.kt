@@ -1,20 +1,20 @@
 package us.timinc.mc.cobblemon.droploottables.condition
 
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress
+import com.cobblemon.mod.common.pokemon.Pokemon
 import com.cobblemon.mod.common.util.pokedex
 import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.storage.loot.LootContext
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType
 import us.timinc.mc.cobblemon.droploottables.DropLootTables
 import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKeys.FOCUS_PLAYER
 import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKeys.FOCUS_POKEMON
-import us.timinc.mc.cobblemon.droploottables.paramextractor.PlayerParamExtractor
-import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
 
 class KnowledgeLevelCondition(
     val targetPokemon: ResourceLocation = FOCUS_POKEMON,
@@ -54,8 +54,10 @@ class KnowledgeLevelCondition(
     override fun getType(): LootItemConditionType = DropLootTables.LootItemConditionTypes.KNOWLEDGE_LEVEL_CONDITION
 
     override fun test(ctx: LootContext): Boolean {
-        val pokemon = PokemonParamExtractor.getFrom(ctx, targetPokemon) ?: return false
-        val player = PlayerParamExtractor.getFrom(ctx, targetPlayer) ?: return false
+        val pokemonParam = DropLootTables.LootParams.params[targetPokemon] ?: return false
+        val pokemon = ctx.getParamOrNull(pokemonParam) as? Pokemon ?: return false
+        val playerParam = DropLootTables.LootParams.params[targetPlayer] ?: return false
+        val player = ctx.getParamOrNull(playerParam) as? ServerPlayer ?: return false
         val playerKnowledge =
             player.pokedex().getSpeciesRecord(pokemon.species.resourceIdentifier)
                 ?.getFormRecord(pokemon.form.name)?.knowledge

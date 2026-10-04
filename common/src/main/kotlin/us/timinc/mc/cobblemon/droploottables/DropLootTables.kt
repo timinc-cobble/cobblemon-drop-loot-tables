@@ -90,7 +90,7 @@ object DropLootTables : AbstractMod<DropLootTables.DropLootTablesConfig>(MOD_ID,
         val resurrectedDropTargets: List<String> = listOf("player_inventory", "pokemon_world_position")
         val starterChosenDropTargets: List<String> = listOf("player_inventory")
         val tickedDropTargets: List<String> = listOf("pokemon_world_position")
-        val victoryDropTargets: List<String> = listOf("pokemon_world_position")
+        val victoryDropTargets: List<String> = listOf("pokemon_held_item")
         val legacyMode: Boolean = true
         var granularDropPeriods: Map<String, String> = mapOf()
     }
@@ -157,10 +157,13 @@ object DropLootTables : AbstractMod<DropLootTables.DropLootTablesConfig>(MOD_ID,
 
         object LootParamKeys {
             val DEFEATED_POKEMON = modResource("defeated_pokemon")
+            val DEFEATED_TEAM = modResource("defeated_team")
             val DEFEATING_POKEMON = modResource("defeating_pokemon")
+            val DEFEATING_TEAM = modResource("defeating_team")
             val FOCUS_PLAYER = modResource("focus_player")
             val FOCUS_POKEBALL = modResource("focus_pokeball")
             val FOCUS_POKEMON = modResource("focus_pokemon")
+            val FOCUS_TEAM = modResource("focus_team")
             val PREVIOUS_POKEMON = modResource("previous_pokemon")
         }
     }
@@ -188,10 +191,13 @@ object DropLootTables : AbstractMod<DropLootTables.DropLootTablesConfig>(MOD_ID,
         val params: MutableMap<ResourceLocation, LootContextParam<*>> = mutableMapOf()
 
         val DEFEATED_POKEMON: LootContextParam<Pokemon> = register(DataKeys.LootParamKeys.DEFEATED_POKEMON)
+        val DEFEATED_TEAM: LootContextParam<List<Pokemon>> = register(DataKeys.LootParamKeys.DEFEATED_TEAM)
         val DEFEATING_POKEMON: LootContextParam<Pokemon> = register(DataKeys.LootParamKeys.DEFEATING_POKEMON)
+        val DEFEATING_TEAM: LootContextParam<List<Pokemon>> = register(DataKeys.LootParamKeys.DEFEATING_TEAM)
         val FOCUS_PLAYER: LootContextParam<ServerPlayer> = register(DataKeys.LootParamKeys.FOCUS_PLAYER)
         val FOCUS_POKEBALL: LootContextParam<PokeBall> = register(DataKeys.LootParamKeys.FOCUS_POKEBALL)
         val FOCUS_POKEMON: LootContextParam<Pokemon> = register(DataKeys.LootParamKeys.FOCUS_POKEMON)
+        val FOCUS_TEAM: LootContextParam<List<Pokemon>> = register(DataKeys.LootParamKeys.FOCUS_TEAM)
         val PREVIOUS_POKEMON: LootContextParam<Pokemon> = register(DataKeys.LootParamKeys.PREVIOUS_POKEMON)
 
         fun <T> register(resourceLocation: ResourceLocation): LootContextParam<T> {
@@ -297,14 +303,10 @@ object DropLootTables : AbstractMod<DropLootTables.DropLootTablesConfig>(MOD_ID,
             Events.SINGLE_DEFEAT.post(*events.toTypedArray())
         }
         CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.LOWEST) { evt ->
-            val events = evt.winners.flatMap(BattleActor::pokemonList).flatMap { winner ->
-                evt.losers.flatMap(BattleActor::pokemonList).map { loser ->
-                    SingleVictoryEvent(
-                        winner.effectedPokemon,
-                        loser.effectedPokemon,
-                        evt.battle,
-                    )
-                }
+            val events = evt.winners.flatMap(BattleActor::pokemonList).mapNotNull { winner ->
+                val loser = winner.actor.getSide().getOppositeSide().actors
+                    .flatMap(BattleActor::pokemonList).firstOrNull() ?: return@mapNotNull null
+                SingleVictoryEvent(winner.effectedPokemon, loser.effectedPokemon, evt.battle)
             }
             Events.SINGLE_VICTORY.post(*events.toTypedArray())
         }

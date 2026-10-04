@@ -1,5 +1,6 @@
 package us.timinc.mc.cobblemon.droploottables.condition
 
+import com.cobblemon.mod.common.pokemon.Pokemon
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceLocation
@@ -9,7 +10,6 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType
 import us.timinc.mc.cobblemon.droploottables.COBBLEMON_RESOURCE_LOCATION_CODEC
 import us.timinc.mc.cobblemon.droploottables.DropLootTables
 import us.timinc.mc.cobblemon.droploottables.DropLootTables.DataKeys.LootParamKeys.FOCUS_POKEMON
-import us.timinc.mc.cobblemon.droploottables.paramextractor.PokemonParamExtractor
 
 @Deprecated("Use the newly improved pokemon_matcher condition, it now accommodates this.")
 class TeraTypeCondition(
@@ -30,7 +30,8 @@ class TeraTypeCondition(
     override fun getType(): LootItemConditionType = DropLootTables.LootItemConditionTypes.TERA_TYPE_CONDITION
 
     override fun test(ctx: LootContext): Boolean {
-        val pokemon = PokemonParamExtractor.getFrom(ctx, targetPokemon) ?: return false
+        val pokemonParam = DropLootTables.LootParams.params[targetPokemon] ?: return false
+        val pokemon = ctx.getParamOrNull(pokemonParam) as? Pokemon ?: return false
         return types.contains(pokemon.teraType.id)
     }
 }
