@@ -9,9 +9,15 @@ architectury {
 
 loom {
     silentMojangMappingsLicense()
+
+    @Suppress("UnstableApiUsage")
+    mixin {
+        defaultRefmapName.set("mixins.${rootProject.name}.refmap.json")
+    }
 }
 
 dependencies {
+    modCompileOnly("net.fabricmc.fabric-api:fabric-api:${property("fabric_api_version")}")
     minecraft("com.mojang:minecraft:${property("minecraft_version")}")
     mappings(loom.officialMojangMappings())
     modImplementation("com.cobblemon:mod:${property("cobblemon_version")}") { isTransitive = false }

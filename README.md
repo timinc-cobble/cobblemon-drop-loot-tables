@@ -1,6 +1,6 @@
 # Drop Loot Tables
 
-v1.8.1-1.9
+v1.8.4-1.9
 
 [Modrinth](https://modrinth.com/mod/cobblemon-droploottables)
 
@@ -95,8 +95,8 @@ Check out the demo pack below. It has the following basic examples:
 
 ## Known Issues
 
-- ≤v1.7.3-1.9.0 had an issue with trying to run the tick dropper too early and getting a null for its own ID. Yeah, doesn’t make sense to me either. ≥v1.7.3-1.9.1 fixes this by allowing for the ID to be null, and safely failing by not finding any droppers if that’s the case.
-- v1.8.1-1.9.2 had an issue with the evolution and Pokémon death base-drop mixins not applying correctly in packaged builds. v1.8.1-1.9.3 fixes those mixin targets.
+- ≤v1.8.2-1.9 had an issue with trying to run the tick dropper too early and getting a null for its own ID. Yeah, doesn’t make sense to me either. ≥v1.8.2-1.9 fixes this by allowing for the ID to be null, and safely failing by not finding any droppers if that’s the case.
+- v1.8.2-1.9 had an issue with the evolution and Pokémon death base-drop mixins not applying correctly in packaged builds. v1.8.2-1.9 fixes those mixin targets.
 
 ## Roadmap
 
