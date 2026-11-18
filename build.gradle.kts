@@ -19,7 +19,6 @@ allprojects {
     group = project.property("maven_group") as String
 
     repositories {
-        mavenLocal()
         mavenCentral()
         maven("https://maven.impactdev.net/repository/development/")
         maven("https://maven.cobbled-creators.org/releases")
