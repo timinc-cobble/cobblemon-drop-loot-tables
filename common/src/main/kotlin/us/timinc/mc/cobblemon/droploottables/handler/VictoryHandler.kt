@@ -1,5 +1,6 @@
 package us.timinc.mc.cobblemon.droploottables.handler
 
+import com.cobblemon.mod.common.pokemon.Pokemon
 import com.cobblemon.mod.common.util.asIdentifierDefaultingNamespace
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
@@ -22,13 +23,13 @@ object VictoryHandler : DropHandler<VictoryDropper.Context, VictoryDropper, Sing
     override val dropTargetTypes: MutableMap<ResourceLocation, (evt: SingleVictoryEvent) -> DropTarget?> =
         mutableMapOf(
             DropLootTables.DataKeys.DropTargetTypes.PLAYER_ENDER_STORAGE to { evt ->
-                evt.winner.getOwnerPlayer()?.let(::PlayerEnderChestDropTarget)
+                evt.winnerTrainerPlayer?.let(::PlayerEnderChestDropTarget)
             },
             DropLootTables.DataKeys.DropTargetTypes.PLAYER_INVENTORY to { evt ->
                 evt.winner.getOwnerPlayer()?.let(::PlayerDropTarget)
             },
             DropLootTables.DataKeys.DropTargetTypes.POKEMON_WORLD_POSITION to { evt ->
-                evt.loser.entity?.let(::PokemonEntityDropTarget)
+                evt.winner.entity?.let(::PokemonEntityDropTarget)
             },
             DropLootTables.DataKeys.DropTargetTypes.POKEMON_HELD_ITEM to { evt ->
                 PokemonHeldItemDropTarget(evt.winner)
@@ -48,7 +49,14 @@ object VictoryHandler : DropHandler<VictoryDropper.Context, VictoryDropper, Sing
     override fun getContext(evt: SingleVictoryEvent): VictoryDropper.Context = VictoryDropper.Context(
         getLevel(evt)!!,
         evt.winner,
-        evt.loser,
+        evt.winnerTrainer,
+        evt.winnerTrainerPlayer,
+        evt.losers,
+        evt.losersTrainers,
+        evt.facedLosers,
+        evt.facedLosersTrainers,
+        evt.team,
+        evt.teamTrainers,
         evt.battle,
     )
 

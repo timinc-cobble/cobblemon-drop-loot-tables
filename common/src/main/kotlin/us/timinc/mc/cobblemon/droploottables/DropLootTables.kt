@@ -10,6 +10,7 @@ import com.mojang.serialization.MapCodec
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.level.storage.loot.parameters.LootContextParam
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType
@@ -90,7 +91,7 @@ object DropLootTables : AbstractMod<DropLootTables.DropLootTablesConfig>(MOD_ID,
         val resurrectedDropTargets: List<String> = listOf("player_inventory", "pokemon_world_position")
         val starterChosenDropTargets: List<String> = listOf("player_inventory")
         val tickedDropTargets: List<String> = listOf("pokemon_world_position")
-        val victoryDropTargets: List<String> = listOf("pokemon_world_position")
+        val victoryDropTargets: List<String> = listOf("pokemon_held_item")
         val legacyMode: Boolean = true
         var granularDropPeriods: Map<String, String> = mapOf()
     }
@@ -157,6 +158,13 @@ object DropLootTables : AbstractMod<DropLootTables.DropLootTablesConfig>(MOD_ID,
 
         object LootParamKeys {
             val DEFEATED_POKEMON = modResource("defeated_pokemon")
+            val DEFEATED_TEAM = modResource("defeated_team")
+            val FACED_DEFEATED_TEAM = modResource("faced_defeated_team")
+            val FOCUS_TRAINER = modResource("focus_trainer")
+            val DEFEATED_TEAM_TRAINERS = modResource("defeated_team_trainers")
+            val FACED_DEFEATED_TEAM_TRAINERS = modResource("faced_defeated_team_trainers")
+            val FOCUS_TEAMMATE_TRAINERS = modResource("focus_teammate_trainers")
+            val FOCUS_TEAMMATES = modResource("focus_teammates")
             val DEFEATING_POKEMON = modResource("defeating_pokemon")
             val FOCUS_PLAYER = modResource("focus_player")
             val FOCUS_POKEBALL = modResource("focus_pokeball")
@@ -188,6 +196,13 @@ object DropLootTables : AbstractMod<DropLootTables.DropLootTablesConfig>(MOD_ID,
         val params: MutableMap<ResourceLocation, LootContextParam<*>> = mutableMapOf()
 
         val DEFEATED_POKEMON: LootContextParam<Pokemon> = register(DataKeys.LootParamKeys.DEFEATED_POKEMON)
+        val DEFEATED_TEAM: LootContextParam<List<Pokemon>> = register(DataKeys.LootParamKeys.DEFEATED_TEAM)
+        val FACED_DEFEATED_TEAM: LootContextParam<List<Pokemon>> = register(DataKeys.LootParamKeys.FACED_DEFEATED_TEAM)
+        val FOCUS_TRAINER: LootContextParam<LivingEntity> = register(DataKeys.LootParamKeys.FOCUS_TRAINER)
+        val DEFEATED_TEAM_TRAINERS: LootContextParam<Set<LivingEntity>> = register(DataKeys.LootParamKeys.DEFEATED_TEAM_TRAINERS)
+        val FACED_DEFEATED_TEAM_TRAINERS: LootContextParam<Set<LivingEntity>> = register(DataKeys.LootParamKeys.FACED_DEFEATED_TEAM_TRAINERS)
+        val FOCUS_TEAMMATE_TRAINERS: LootContextParam<Set<LivingEntity>> = register(DataKeys.LootParamKeys.FOCUS_TEAMMATE_TRAINERS)
+        val FOCUS_TEAMMATES: LootContextParam<List<Pokemon>> = register(DataKeys.LootParamKeys.FOCUS_TEAMMATES)
         val DEFEATING_POKEMON: LootContextParam<Pokemon> = register(DataKeys.LootParamKeys.DEFEATING_POKEMON)
         val FOCUS_PLAYER: LootContextParam<ServerPlayer> = register(DataKeys.LootParamKeys.FOCUS_PLAYER)
         val FOCUS_POKEBALL: LootContextParam<PokeBall> = register(DataKeys.LootParamKeys.FOCUS_POKEBALL)
@@ -297,16 +312,7 @@ object DropLootTables : AbstractMod<DropLootTables.DropLootTablesConfig>(MOD_ID,
             Events.SINGLE_DEFEAT.post(*events.toTypedArray())
         }
         CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.LOWEST) { evt ->
-            val events = evt.winners.flatMap(BattleActor::pokemonList).flatMap { winner ->
-                evt.losers.flatMap(BattleActor::pokemonList).map { loser ->
-                    SingleVictoryEvent(
-                        winner.effectedPokemon,
-                        loser.effectedPokemon,
-                        evt.battle,
-                    )
-                }
-            }
-            Events.SINGLE_VICTORY.post(*events.toTypedArray())
+            Events.SINGLE_VICTORY.post(*SingleVictoryEvent.from(evt))
         }
 
         Events.SINGLE_DEFEAT.subscribe(Priority.LOWEST, DefeatedHandler::handle)
