@@ -10,6 +10,8 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.level.storage.loot.LootParams
 import net.minecraft.world.level.storage.loot.parameters.LootContextParam
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams
@@ -55,29 +57,43 @@ class VictoryDropper(
 
     class Context(
         override val level: ServerLevel,
-        val focusPokemon: Pokemon,
-        val defeatedPokemon: Pokemon,
+        val winner: Pokemon,
+        val winnerTrainer: LivingEntity?,
+        val winnerTrainerPlayer: ServerPlayer?,
+        val losers: List<Pokemon>,
+        val losersTrainers: Set<LivingEntity>,
+        val facedLosers: List<Pokemon>,
+        val facedLosersTrainers: Set<LivingEntity>,
+        val team: List<Pokemon>,
+        val teamTrainers: Set<LivingEntity>,
         val battle: PokemonBattle,
     ) : DropContext {
         override fun toLootParams(): LootParams {
-            val pos = focusPokemon.entity?.let(PokemonEntity::position)
+            val pos = winner.entity?.let(PokemonEntity::position)
                 ?: (battle.losers + battle.winners).flatMap(
                     BattleActor::pokemonList
                 ).firstNotNullOfOrNull(BattlePokemon::entity)?.position()
                 ?: battle.players.firstOrNull()?.position()
 
             val params = mutableMapOf<LootContextParam<out Any>, Any>(
-                DropLootTables.LootParams.FOCUS_POKEMON to focusPokemon,
-                DropLootTables.LootParams.DEFEATED_POKEMON to defeatedPokemon,
+                DropLootTables.LootParams.FOCUS_POKEMON to winner,
+                DropLootTables.LootParams.DEFEATED_TEAM to losers,
+                DropLootTables.LootParams.FACED_DEFEATED_TEAM to facedLosers,
+                DropLootTables.LootParams.DEFEATED_TEAM_TRAINERS to losersTrainers,
+                DropLootTables.LootParams.FACED_DEFEATED_TEAM_TRAINERS to facedLosersTrainers,
+                DropLootTables.LootParams.FOCUS_TEAMMATE_TRAINERS to teamTrainers,
+                DropLootTables.LootParams.FOCUS_TEAMMATES to team,
             )
-            focusPokemon.entity?.let { params[LootContextParams.THIS_ENTITY] = it }
+            winner.entity?.let { params[LootContextParams.THIS_ENTITY] = it }
             pos?.let { params[LootContextParams.ORIGIN] = it }
+            winnerTrainer?.let { params[DropLootTables.LootParams.FOCUS_TRAINER] = it }
+            winnerTrainerPlayer?.let { params[DropLootTables.LootParams.FOCUS_PLAYER] = it }
 
             return LootParams(
                 level,
                 params,
                 mapOf(),
-                focusPokemon.getOwnerPlayer()?.luck ?: 0F
+                winnerTrainerPlayer?.luck ?: 0F
             )
         }
     }
